@@ -1,0 +1,197 @@
+body {
+    background-color: #cce0ff;
+    color: #000;
+    margin: 0;
+}
+
+a {
+    color: #080;
+    box-shadow: none;
+}
+
+.left-panel-internal a,
+.left-panel-internal a:focus {
+    box-shadow: none;
+}
+
+canvas {
+    display: block;
+}
+
+.btn-menu {
+    color: var(--primary);
+    transition: all 150ms;
+    box-shadow: none;
+}
+
+.btn-menu:hover {
+    /* color: #ffffff; */
+    background: #eaeaea;
+}
+
+.loading-msg {
+    height: 100vh;
+    width: 100vw;
+    position: fixed;
+    z-index: 1100;
+    opacity: 1;
+    background: white;
+    transition: opacity 200ms ease-in-out;
+}
+
+.loading-msg.hide {
+    opacity: 0;
+}
+
+.loading-text {
+    color: #636363;
+    display: inline-block;
+    text-align: center;
+    padding: 0rem 0rem 0.5rem 0rem;
+}
+
+.loading-msg.initialising .progress {
+    max-height: 0px;
+    padding: 0rem 0rem 0rem 0rem;
+}
+
+.loading-msg.initialising .loading-text {
+    max-height: 0px;
+    transition: all 200ms 100ms ease-in-out;
+    padding: 0rem 0rem 0rem 0rem;
+}
+
+.loading-cog {
+    color: #09abe8;
+    max-height: 0px;
+    overflow: hidden;
+}
+
+.loading-num {
+    max-height: 100px;
+    overflow: hidden;
+}
+
+.loading-msg.initialising .loading-cog {
+    max-height: 100px;
+    transition: all 200ms 300ms ease-in-out;
+}
+
+    var torrents = []
+.loading-msg.initialising .loading-num {
+    max-height: 0px;
+    transition: all 300ms ease-in-out;
+}
+
+.loading-msg .progress {
+    width: 20rem;
+    max-height: 20px;
+    transition: all 200ms ease-in-out;
+    overflow: hidden;
+    /* padding: 0.5rem 0rem 0.5rem 0rem; */
+}
+
+a.btn i {
+    background: #00000010;
+    min-width: 3rem;
+}
+
+.left-panel-internal i::before {
+    vertical-align: sub;
+}
+
+.left-panel-internal i {}
+
+.left-panel-internal i {
+    min-width: 3rem;
+    text-shadow: 2px 2px 2px #0000004d;
+    background: #00000030;
+    var torrents = []
+}
+
+.card.country-menu {
+    width: 20rem;
+    max-width: 20rem;
+    bottom: 0;
+    right: 0;
+    box-shadow: 0px 0px 0px 0px #00000030;
+    position: fixed;
+    /* overflow-x: hidden; */
+    /* height: 100vh; */
+    transition: transform 400ms ease-in-out, box-shadow 400ms ease-in-out;
+    transform: translateY(100vh);
+}
+
+.card.country-menu.show {
+    transform: translateY(0vh);
+    box-shadow: 0px 0px 24px 0px #00000030;
+}
+
+.card.left-menu {
+    min-width: 12rem;
+    bottom: 0;
+    left: 0;
+    box-shadow: 0px 0px 0px 0px #00000030;
+    position: fixed;
+    z-index: 1;
+    /* overflow-x: hidden; */
+    /* height: 100vh; */
+    transition: transform 400ms ease-in-out, box-shadow 400ms ease-in-out;
+    transform: translateY(100vh);
+}
+
+.card.left-menu.show {
+    transform: translateY(0vh);
+    box-shadow: 0px 0px 24px 0px #00000030;
+}
+
+.darker {
+    background: #00000030;
+    min-width: 3rem;
+}
+
+.small-title {
+    font-size: 12px;
+}
+
+.position-container {
+    background: #c300c3;
+    color: #fff;
+}
+
+.ground-speed-container {
+    background: #00c356;
+    color: #fff;
+}
+
+.altitude-container {
+    background: #ff3200;
+    color: #fff;
+}
+
+.game-screen-options {
+    max-width: 200px;
+    transition: max-height 200ms 100ms ease-in-out, margin 200ms 100ms ease-in-out;
+    overflow-y: hidden;
+    max-height: 500px;
+}
+
+.game-screen-options.hide {
+    /* transition: max-height 200ms 100ms ease-in-out, margin 200ms 100ms ease-in-out; */
+    transition: max-height 200ms ease-in-out, margin 200ms ease-in-out;
+    max-height: 0px;
+}
+
+.game-screen {
+    height: 100vh;
+    width: 100vw;
+    position: fixed;
+    z-index: 1101;
+    opacity: 1;
+    background: white;
+    transition: opacity 200ms ease-in-out;
+}
+
+.game-screen.hide {
+    opacity: 0;
+}

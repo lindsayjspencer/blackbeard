@@ -43,6 +43,7 @@ rl.on("close", function() {
 
     app.use(express.static('js'))
     app.use(express.static('img'))
+    app.use(express.static('css'))
     app.use(express.static('node_modules'))
 
     io.sockets.on('connection', function(socket) {
@@ -52,7 +53,22 @@ rl.on("close", function() {
             // get info
             Blackbeard.getTorrents(function(res) {
                 // console.log(res.torrents)
-                    io.emit('update', res.torrents);
+                var msg = {
+                    torrents: []
+                }
+                var _tor
+                res.torrents.forEach((tor)=>{
+                    _tor = {
+                        name: tor.name,
+                        id: tor.id,
+                        leftUntilDone: tor.leftUntilDone,
+                        rateDownload: tor.rateDownload,
+                        status: tor.status,
+                        percentDone: tor.percentDone
+                    }
+                    msg.torrents.push(_tor)
+                })
+                io.emit('update', msg);
             })
         });
         socket.on('disconnect', function() {

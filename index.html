@@ -2,272 +2,25 @@
 <html lang="en">
 
 <head>
-    <title>Fireworks</title>
+    <title>Blackbeard</title>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
     <script defer src="/jquery/dist/jquery.min.js"></script>
     <link defer type="text/css" rel="stylesheet" href="/bootstrap/dist/css/bootstrap.min.css">
+    <link type="text/css" rel="stylesheet" href="/main.css">
     <link defer rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.11.2/css/all.css" integrity="sha256-46qynGAkLSFpVbEBog43gvNhfrOj+BmwXdxFgVK/Kvc=" crossorigin="anonymous">
     <script defer src="/bootstrap/dist/js/bootstrap.min.js"></script>
     <script defer src="/tween.umd.js"></script>
     <script defer src="https://cdn.socket.io/socket.io-1.7.3.js"></script>
-    <style>
-        body {
-            background-color: #cce0ff;
-            color: #000;
-            margin: 0;
-        }
-
-        a {
-            color: #080;
-            box-shadow: none;
-        }
-
-        .left-panel-internal a,
-        .left-panel-internal a:focus {
-            box-shadow: none;
-        }
-
-        canvas {
-            display: block;
-        }
-
-        .btn-menu {
-            color: var(--primary);
-            transition: all 150ms;
-            box-shadow: none;
-        }
-
-        .btn-menu:hover {
-            /* color: #ffffff; */
-            background: #eaeaea;
-        }
-
-        .loading-msg {
-            height: 100vh;
-            width: 100vw;
-            position: fixed;
-            z-index: 1100;
-            opacity: 1;
-            background: white;
-            transition: opacity 200ms ease-in-out;
-        }
-
-        .loading-msg.hide {
-            opacity: 0;
-        }
-
-        .loading-text {
-            color: #636363;
-            display: inline-block;
-            text-align: center;
-            padding: 0rem 0rem 0.5rem 0rem;
-        }
-
-        .loading-msg.initialising .progress {
-            max-height: 0px;
-            padding: 0rem 0rem 0rem 0rem;
-        }
-
-        .loading-msg.initialising .loading-text {
-            max-height: 0px;
-            transition: all 200ms 100ms ease-in-out;
-            padding: 0rem 0rem 0rem 0rem;
-        }
-
-        .loading-cog {
-            color: #09abe8;
-            max-height: 0px;
-            overflow: hidden;
-        }
-
-        .loading-num {
-            max-height: 100px;
-            overflow: hidden;
-        }
-
-        .loading-msg.initialising .loading-cog {
-            max-height: 100px;
-            transition: all 200ms 300ms ease-in-out;
-        }
-
-            var torrents = []
-        .loading-msg.initialising .loading-num {
-            max-height: 0px;
-            transition: all 300ms ease-in-out;
-        }
-
-        .loading-msg .progress {
-            width: 20rem;
-            max-height: 20px;
-            transition: all 200ms ease-in-out;
-            overflow: hidden;
-            /* padding: 0.5rem 0rem 0.5rem 0rem; */
-        }
-
-        a.btn i {
-            background: #00000010;
-            min-width: 3rem;
-        }
-
-        .left-panel-internal i::before {
-            vertical-align: sub;
-        }
-
-        .left-panel-internal i {}
-
-        .left-panel-internal i {
-            min-width: 3rem;
-            text-shadow: 2px 2px 2px #0000004d;
-            background: #00000030;
-            var torrents = []
-        }
-
-        .card.country-menu {
-            width: 20rem;
-            max-width: 20rem;
-            bottom: 0;
-            right: 0;
-            box-shadow: 0px 0px 0px 0px #00000030;
-            position: fixed;
-            /* overflow-x: hidden; */
-            /* height: 100vh; */
-            transition: transform 400ms ease-in-out, box-shadow 400ms ease-in-out;
-            transform: translateY(100vh);
-        }
-
-        .card.country-menu.show {
-            transform: translateY(0vh);
-            box-shadow: 0px 0px 24px 0px #00000030;
-        }
-
-        .card.left-menu {
-            min-width: 12rem;
-            bottom: 0;
-            left: 0;
-            box-shadow: 0px 0px 0px 0px #00000030;
-            position: fixed;
-            z-index: 1;
-            /* overflow-x: hidden; */
-            /* height: 100vh; */
-            transition: transform 400ms ease-in-out, box-shadow 400ms ease-in-out;
-            transform: translateY(100vh);
-        }
-
-        .card.left-menu.show {
-            transform: translateY(0vh);
-            box-shadow: 0px 0px 24px 0px #00000030;
-        }
-
-        .darker {
-            background: #00000030;
-            min-width: 3rem;
-        }
-
-        .small-title {
-            font-size: 12px;
-        }
-
-        .position-container {
-            background: #c300c3;
-            color: #fff;
-        }
-
-        .ground-speed-container {
-            background: #00c356;
-            color: #fff;
-        }
-
-        .altitude-container {
-            background: #ff3200;
-            color: #fff;
-        }
-
-        .game-screen-options {
-            max-width: 200px;
-            transition: max-height 200ms 100ms ease-in-out, margin 200ms 100ms ease-in-out;
-            overflow-y: hidden;
-            max-height: 500px;
-        }
-
-        .game-screen-options.hide {
-            /* transition: max-height 200ms 100ms ease-in-out, margin 200ms 100ms ease-in-out; */
-            transition: max-height 200ms ease-in-out, margin 200ms ease-in-out;
-            max-height: 0px;
-        }
-
-        .game-screen {
-            height: 100vh;
-            width: 100vw;
-            position: fixed;
-            z-index: 1101;
-            opacity: 1;
-            background: white;
-            transition: opacity 200ms ease-in-out;
-        }
-
-        .game-screen.hide {
-            opacity: 0;
-        }
-
-        .thrust-progress {
-            transition: none;
-            /* transition: width 0.2s ease; */
-        }
-
-        .text-white-alpha {
-            color: #ffffff90;
-        }
-    </style>
-    <script>
-        function clip(text) {
-            var copyElement = document.createElement('input');
-            copyElement.setAttribute('type', 'text');
-            copyElement.setAttribute('value', text);
-            copyElement = document.body.appendChild(copyElement);
-            copyElement.select();
-            document.execCommand('copy');
-            copyElement.remove();
-        }
-
-        function consoleLog(text) {
-            console.log(text);
-            $(".console-ticker").html(text);
-        }
-
-        function o_n(n) {
-            return parseFloat(Math.round(n * 100) / 100);
-        }
-
-        function _fcur(num) {
-            return formatMoney(parseFloat(num), 0);
-        }
-
-        function formatMoney(amount, decimalCount = 2, decimal = ".", thousands = ",") {
-            try {
-                decimalCount = Math.abs(decimalCount);
-                decimalCount = isNaN(decimalCount) ? 2 : decimalCount;
-
-                const negativeSign = amount < 0 ? "-" : "";
-
-                let i = parseInt(amount = Math.abs(Number(amount) || 0).toFixed(decimalCount)).toString();
-                let j = (i.length > 3) ? i.length % 3 : 0;
-
-                return negativeSign + (j ? i.substr(0, j) + thousands : '') + i.substr(j).replace(/(\d{3})(?=\d)/g, "$1" + thousands) + (decimalCount ? decimal + Math.abs(amount - i).toFixed(decimalCount).slice(2) : "");
-            } catch (e) {
-                // console.log(e)
-            }
-        };
-    </script>
 </head>
 
 <body>
     <div class="game-screen d-flex flex-column align-items-center">
         <div class="main-logo mb-2 mt-auto">
-            <i class="fas fa-bomb fa-3x text-warning"></i>
+            <i class="fas fa-skull fa-3x text-warning"></i>
         </div>
         <h3 class="mt-2">
-            Fireworks
+            Blackbeard
         </h3>
         <div class="d-flex flex-row game-screen-options init-loading justify-content-center mt-3 w-100 text-black-50">
             <span class="loading mr-2">Loading</span>
@@ -276,22 +29,8 @@
             </span>
         </div>
         <div class="input-group game-screen-options hide mb-auto">
-            <button class="btn btn-outline-secondary join-game m-auto btn-block" type="button">Initiate</button>
+            <button class="btn btn-outline-secondary init-btn m-auto btn-block" type="button">Initiate</button>
         </div>
-    </div>
-    <div class="loading-msg d-flex flex-column align-items-center">
-        <div class="loading-cog mb-1 mt-auto">
-            <i class="fas fa-cog fa-spin fa-3x"></i>
-        </div>
-        <h5 class="loading-num">
-            0%
-        </h5>
-        <div class="progress">
-            <div class="progress-bar progress-bar-striped progress-bar-animated loading-progress" role="progressbar" style="width: 0%;" aria-valuenow="10" aria-valuemin="0" aria-valuemax="100"></div>
-        </div>
-        <h5 class="loading-text mb-auto mt-2">
-            Loading assets
-        </h5>
     </div>
 
     <script type="module">
@@ -308,12 +47,25 @@
                 socket.emit('checkping', "yes")
             }
 
-            setInterval(socket_loop, 5000);
+            setInterval(socket_loop, 500);
 
         }
 
         window.onload = (e) => {
             initiateSockets();
+            $(".game-screen-options").toggleClass("hide");
+            $("html").on("keyup", function(e) {
+                if(e.keyCode == 13) {
+                    $(".init-btn").click();
+                }
+            });
+            $(".init-btn").on("click", function(){
+                $("html").off("keyup");
+                $(".game-screen").addClass("hide");
+                setTimeout(function(){
+                    $(".game-screen").remove();
+                }, 600);
+            });
         }
 
 
