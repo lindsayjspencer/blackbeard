@@ -18,6 +18,12 @@ echo ""
 echo "// Installing Blackbeard"
 npm i --silent
 echo "> Installed."
+mkdir -p torrents
+chmod 777 torrents
+mkdir -p downloads
+chmod 777 downloads
+mkdir -p data
+chmod 777 data
 echo ""
 echo "// Creating persistent service"
 sudo cp ~/Scripts/startup/blackbeard-monitor.service /etc/systemd/system/blackbeard-monitor.service
