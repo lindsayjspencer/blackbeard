@@ -158,7 +158,12 @@ module.exports = {
                             if (err) throw err
                             var torstore = JSON.parse(data)
                             try {
-								var torName = torstore.title//.replace("", "")
+                                var torname
+                                if(torstore.title=='.') {
+                                    torName = tor.name
+                                } else {
+    								torName = torstore.title//.replace("", "")
+                                }
                                 if (fs.existsSync('downloads/' + torName)) {
                                     //file exists
                                     // console.log("already exists")
