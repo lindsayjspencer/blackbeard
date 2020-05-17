@@ -1,0 +1,15 @@
+
+[Unit]
+Description=Node.js Blackbeard monitor
+
+[Service]
+PIDFile=/tmp/blackbeard-monitor.pid
+User=lindsay
+Group=lindsay
+Restart=always
+KillSignal=SIGQUIT
+WorkingDirectory=/home/lindsay/Node/blackbeard/
+ExecStart=/home/lindsay/Node/blackbeard/monitor.js
+
+[Install]
+WantedBy=multi-user.target
