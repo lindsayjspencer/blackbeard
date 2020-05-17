@@ -33,26 +33,96 @@
         </div>
     </div>
 
+    <div class="cover-container d-flex h-100 p-3 mx-auto flex-column w-100">
+      <header class="masthead">
+        <div class="inner">
+          <h3 class="masthead-brand">Blackbeard</h3>
+          <nav class="nav nav-masthead justify-content-center">
+            <a class="nav-link active" href="#">Home</a>
+            <a class="nav-link" href="#">Settings</a>
+          </nav>
+        </div>
+      </header>
+
+      <main role="main" class="inner cover">
+          <div class="torrents-container d-flex flex-column w-100">
+
+          </div>
+      </main>
+    </div>
+
     <script type="module">
 
+        var activeTorrents, updateLoop, listLoop, displayLoop;
+
+        var activeTorrents = [];
         function initiateSockets() {
 
             const socket = io();
 
-            socket.on('update', function(torrents) {
-                console.log(torrents);
+            socket.on('torrentList', function(torrents) {
+                var tempTorrents = [];
+                torrents.torrents.forEach((item, i) => {
+                    tempTorrents.push(item);
+                });
+                activeTorrents = tempTorrents
             });
 
-            function socket_loop() {
+            socket.on('update', function(torrents) {
+                torrents.torrents.forEach((tor)=>{
+                    activeTorrents.forEach((item) => {
+                        if(item.id == tor.id) {
+                            item.leftUntilDone = tor.leftUntilDone;
+                            item.rateDownload = tor.rateDownload;
+                            item.percentDone = tor.percentDone;
+                        }
+                    });
+                });
+            });
+
+            function update_loop() {
                 socket.emit('checkping', "yes")
             }
 
-            setInterval(socket_loop, 500);
+            function list_loop() {
+                socket.emit('sendList', "yes")
+            }
+
+            function display_loop() {
+                activeTorrents.forEach((item) => {
+                    if($(".torrent-container-"+item.id).length==0) {
+                        // draw torrent
+                        console.log("draw");
+                        $(".torrents-container").append(`
+                            <div class="torrent-container-${item.id} d-flex">
+                                <div class="id">${item.id}</div>
+                                <div class="name text-truncate">${item.name}</div>
+                                <div class="time"></div>
+                            </div>
+                            <div class="torrent-progress-${item.id} mb-2">
+                                <div class="progress">
+                                    <div class="progress-bar" role="progressbar" style="width: 25%;" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100">25%</div>
+                                </div>
+                            </div>
+                        `);
+                    } else {
+                        // update torrent
+                        console.log("update");
+                        // $(".torrent-container-"+item.id+" .status").html(item.status);
+                        $(".torrent-container-"+item.id+" .time").html(Math.round(item.leftUntilDone/item.rateDownload)+"s");
+                        $(".torrent-progress-"+item.id+" .progress-bar").html(Math.round(item.percentDone*100)+"%");
+                        $(".torrent-progress-"+item.id+" .progress-bar").css("width", Math.round(item.percentDone*100)+"%");
+                    }
+                });
+            }
+
+            updateLoop = setInterval(update_loop, 200);
+            listLoop = setInterval(list_loop, 5000);
+            displayLoop = setInterval(display_loop, 200);
 
         }
 
         window.onload = (e) => {
-            initiateSockets();
             $(".game-screen-options").toggleClass("hide");
             $("html").on("keyup", function(e) {
                 if(e.keyCode == 13) {
@@ -60,6 +130,7 @@
                 }
             });
             $(".init-btn").on("click", function(){
+                initiateSockets();
                 $("html").off("keyup");
                 $(".game-screen").addClass("hide");
                 setTimeout(function(){

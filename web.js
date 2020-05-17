@@ -59,16 +59,34 @@ rl.on("close", function() {
                 var _tor
                 res.torrents.forEach((tor)=>{
                     _tor = {
-                        name: tor.name,
                         id: tor.id,
                         leftUntilDone: tor.leftUntilDone,
-                        rateDownload: tor.rateDownload,
                         status: tor.status,
+                        rateDownload: tor.rateDownload,
                         percentDone: tor.percentDone
                     }
                     msg.torrents.push(_tor)
                 })
                 io.emit('update', msg);
+            })
+        });
+        socket.on('sendList', function(msg) {
+            // get info
+            Blackbeard.getTorrents(function(res) {
+                // console.log(res.torrents)
+                var msg = {
+                    torrents: []
+                }
+                var _tor
+                res.torrents.forEach((tor)=>{
+                    _tor = {
+                        name: tor.name,
+                        id: tor.id,
+                        status: tor.status
+                    }
+                    msg.torrents.push(_tor)
+                })
+                io.emit('torrentList', msg);
             })
         });
         socket.on('disconnect', function() {
