@@ -23,4 +23,3 @@ if(args.length==0) {
     rss_loop()
 
 }
-require('./web.js')
