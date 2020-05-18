@@ -158,7 +158,7 @@ module.exports = {
                             if (err) throw err
                             var torstore = JSON.parse(data)
                             try {
-                                var torname
+                                var torName
                                 if(torstore.title=='.') {
                                     torName = tor.name
                                 } else {

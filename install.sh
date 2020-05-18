@@ -26,7 +26,7 @@ mkdir -p data
 chmod 777 data
 echo ""
 echo "// Creating persistent service"
-sudo cp ~/Scripts/startup/blackbeard-monitor.service /etc/systemd/system/blackbeard-monitor.service
+sudo cp lib/blackbeard-monitor.service /etc/systemd/system/blackbeard-monitor.service
 echo "> Created."
 echo ""
 echo "// Enabling service"
@@ -34,3 +34,5 @@ sudo systemctl daemon-reload
 sudo systemctl enable blackbeard-monitor.service
 sudo systemctl start blackbeard-monitor.service
 echo "> Service started."
+echo ""
+node web

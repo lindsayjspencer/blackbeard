@@ -19,4 +19,8 @@ if(args.length==0) {
     }
     setInterval(sort_loop, 1000)
     setInterval(rss_loop, 100000)
+
+    rss_loop()
+
 }
+require('./web.js')
