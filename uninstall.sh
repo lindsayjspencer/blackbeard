@@ -19,10 +19,13 @@ echo "> data/* cleared"
 echo ""
 echo "// Disabling service"
 sudo systemctl stop blackbeard-monitor.service
+sudo systemctl stop blackbeard-web.service
 sudo systemctl disable blackbeard-monitor.service
+sudo systemctl disable blackbeard-web.service
 sudo systemctl daemon-reload
 echo "> Service disabled."
 sudo rm /etc/systemd/system/blackbeard-monitor.service
+sudo rm /etc/systemd/system/blackbeard-web.service
 echo "> And removed."
 echo ""
 echo "Ready to install."
