@@ -11,6 +11,7 @@
   "license": "ISC",
   "dependencies": {
     "bootstrap": "^4.5.0",
+    "chromecast-api": "^0.3.3",
     "cpx-fixed": "^1.6.0",
     "express": "^4.17.1",
     "jquery": "^3.5.1",

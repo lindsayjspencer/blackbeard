@@ -35,4 +35,3 @@ sudo systemctl enable blackbeard-monitor.service
 sudo systemctl start blackbeard-monitor.service
 echo "> Service started."
 echo ""
-node web

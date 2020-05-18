@@ -59,7 +59,7 @@
     "script-torrent-done-filename": "",
     "seed-queue-enabled": false,
     "seed-queue-size": 10,
-    "speed-limit-down": 100,
+    "speed-limit-down": 10,
     "speed-limit-down-enabled": false,
     "speed-limit-up": 100,
     "speed-limit-up-enabled": false,
@@ -69,5 +69,7 @@
     "upload-limit": 100,
     "upload-limit-enabled": 0,
     "upload-slots-per-torrent": 14,
-    "utp-enabled": true
+    "utp-enabled": true,
+    "watch-dir": "/home/lindsay/Node/blackbeard",
+    "watch-dir-enabled": true
 }

@@ -20,11 +20,8 @@ app.get('/', function(req, res) {
     res.sendFile(__dirname + '/index.html');
 });
 
-app.get('/pause', function(req, res) {
-    Blackbeard.getAll(function(){
-        Blackbeard.pauseAll()
-        res.sendStatus(200)
-    })
+app.get('/play', function(req, res) {
+    res.sendFile('/home/lindsay/Node/blackbeard/downloads/Rick and Morty 4x08 The Vat of Acid Episode/rick.and.morty.s04e08.webrip.x264-btx.mkv');
 });
 
 console.log("\n/// Initialising");
@@ -34,6 +31,7 @@ console.log("\n/// Starting http server on port " + port);
 app.use(express.static('js'))
 app.use(express.static('img'))
 app.use(express.static('css'))
+app.use(express.static('downloads'))
 app.use(express.static('node_modules'))
 
 io.sockets.on('connection', function(socket) {
@@ -69,17 +67,31 @@ io.sockets.on('connection', function(socket) {
             }
             var _tor
             res.torrents.forEach((tor)=>{
-                _tor = {
-                    name: tor.name,
-                    id: tor.id,
-                    leftUntilDone: tor.leftUntilDone,
-                    status: tor.status,
-                    rateDownload: tor.rateDownload,
-                    percentDone: tor.percentDone
-                }
-                msg.torrents.push(_tor)
+                fs.readFile('data/torrent.' + tor.hashString + '.json', 'utf8', (err, data) => {
+                    if (err) throw err
+                    var torstore = JSON.parse(data)
+                    try {
+                        var torName
+                        if(torstore.title=='.') {
+                            torName = tor.name
+                        } else {
+                            torName = torstore.title//.replace("", "")
+                        }
+                        _tor = {
+                            name: torName,
+                            id: tor.id,
+                            leftUntilDone: tor.leftUntilDone,
+                            status: tor.status,
+                            rateDownload: tor.rateDownload,
+                            percentDone: tor.percentDone,
+                            lastUpdated: Date.now()
+                        }
+                        io.emit('torrentInfo', _tor);
+                    } catch (err) {
+                        console.error(err)
+                    }
+                });
             })
-            io.emit('torrentList', msg);
         })
     });
     socket.on('disconnect', function() {

@@ -75,47 +75,51 @@
                 console.log(msg);
             });
 
-            socket.on('torrentList', function(torrents) {
-                activeTorrents = torrents.torrents;
-                tids = [];
-                // $(".torrents-container").html('');
-                torrents.torrents.forEach((item) => {
-                    if($(".torrent-container-"+item.id).length==0) {
-                        // draw torrent
-                        var percent = Math.round(item.percentDone*10000)/100+"%";
-                        var widthperc = Math.round(item.percentDone*10000)/100;
-                        if(parseFloat(widthperc)>!9) {
-                            widthperc = '';
-                        } else {
-                            widthperc = widthperc+"%";
-                        }
-                        var timeleft = (Math.round(item.leftUntilDone/item.rateDownload));
-                        if(item.rateDownload==0) {
-                            timeleft = "--";
-                        } else {
-                            avgTimeLeft = Math.round(timeleft);
-                            var minutesleft = Math.floor(avgTimeLeft/60);
-                            var secondsleft = Math.floor(avgTimeLeft % 60);
-                            if(secondsleft<10) {
-                                secondsleft = "0"+secondsleft;
-                            }
-                            timeleft = minutesleft+":"+secondsleft;
-                        }
-                        console.log("draw");
-                        $(".torrents-container").append(`
-                            <div class="torr torrent-container-${item.id} d-flex flex-column mb-5" data-tid=${item.id}>
-                                <div class="d-flex flex-row w-100 mb-2">
-                                    <div class="name text-truncate">${item.name}</div>
-                                    <div class="time ml-auto" data-prevtime=0>${timeleft}</div>
-                                </div>
-                                <div class="progress">
-                                    <div class="progress-bar" role="progressbar" style="width: ${percent};" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">${widthperc}</div>
-                                </div>
-                            </div>
-                        `);
+            socket.on('torrentInfo', function(torrent) {
+                var find = false;
+                activeTorrents.forEach((tor)=>{
+                    if(tor.id==torrent.id) {
+                        find = true;
                     }
-                    tids.push( item.id );
                 });
+                if(!find) {
+                    activeTorrents.push( torrent );
+                }
+                // $(".torrents-container").html('');
+                if($(".torrent-container-"+torrent.id).length==0) {
+                    // draw torrent
+                    var percent = Math.round(torrent.percentDone*10000)/100+"%";
+                    var widthperc = Math.round(torrent.percentDone*10000)/100;
+                    if(parseFloat(widthperc)>!9) {
+                        widthperc = '';
+                    } else {
+                        widthperc = widthperc+"%";
+                    }
+                    var timeleft = (Math.round(torrent.leftUntilDone/torrent.rateDownload));
+                    if(torrent.rateDownload==0) {
+                        timeleft = "--";
+                    } else {
+                        avgTimeLeft = Math.round(timeleft);
+                        var minutesleft = Math.floor(avgTimeLeft/60);
+                        var secondsleft = Math.floor(avgTimeLeft % 60);
+                        if(secondsleft<10) {
+                            secondsleft = "0"+secondsleft;
+                        }
+                        timeleft = minutesleft+":"+secondsleft;
+                    }
+                    console.log("draw");
+                    $(".torrents-container").append(`
+                        <div class="torr torrent-container-${torrent.id} d-flex flex-column mb-5" data-tid=${torrent.id}>
+                            <div class="d-flex flex-row w-100 mb-2">
+                                <div class="name text-truncate">${torrent.name}</div>
+                                <div class="time ml-auto" data-prevtime=0>${timeleft}</div>
+                            </div>
+                            <div class="progress">
+                                <div class="progress-bar" role="progressbar" style="width: ${percent};" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">${widthperc}</div>
+                            </div>
+                        </div>
+                    `);
+                }
             });
 
             socket.on('update', function(torrents) {
@@ -128,6 +132,7 @@
                             item.leftUntilDone = tor.leftUntilDone;
                             item.rateDownload = tor.rateDownload;
                             item.percentDone = tor.percentDone;
+                            item.lastUpdated = Date.now();
                         }
                     });
                 });
@@ -196,15 +201,16 @@
                     var t = $(this);
                     var find;
                     find = false;
-                    activeTorrents.forEach((item) => {
+                    activeTorrents.forEach((item, index, object) => {
                         if(item.id==t.data('tid')) {
                             // console.log("found "+item.id);
                             find = true;
+                            if((Date.now()-item.lastUpdated)>1000) {
+                                $(".torrent-container-"+t.data('tid')).slideUp();
+                                object.splice(index, 1);
+                            }
                         }
                     })
-                    if(!find) {
-                        $(".torrent-container-"+t.data('tid')).remove();
-                    }
                 })
             }
 

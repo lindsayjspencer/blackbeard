@@ -113,6 +113,9 @@ module.exports = {
     },
     getTorrents: function(cb) {
         transmission.get().then(res => {
+            res.torrents.forEach((torrent)=>{
+
+            })
             cb(res)
         })
     },
