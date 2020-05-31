@@ -25,9 +25,17 @@ chmod 777 downloads
 mkdir -p data
 chmod 777 data
 echo ""
-echo "// Creating persistent service"
-sudo cp lib/blackbeard-monitor.service /etc/systemd/system/blackbeard-monitor.service
-sudo cp lib/blackbeard-web.service /etc/systemd/system/blackbeard-web.service
+echo "// Creating persistent torrent monitor"
+sudo cp lib/bb-json.db.service /etc/systemd/system/bb-json.db.service
+echo "> Created."
+echo ""
+echo "// Creating persistent web server"
+sudo cp lib/bb-web.service /etc/systemd/system/bb-web.service
+echo "> Created."
+echo ""
+echo "// Modify to allow execution"
+sudo chmod +x web.js
+sudo chmod +x json.db/server.js
 echo "> Created."
 echo ""
 echo "// Enabling service"

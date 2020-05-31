@@ -13,12 +13,16 @@ if(args.length==0) {
     function sort_loop() {
         Blackbeard.sortTorrents()
     }
+    var x = 0;
     function rss_loop() {
-        console.clear()
-        Blackbeard.getFeed()
+        // Blackbeard.getFeeds()
+        let JsonDB = require('./json.db/json.db')
+        let AllShows = require('./scripts/all-shows')
+
     }
-    setInterval(sort_loop, 1000)
-    setInterval(rss_loop, 100000)
+
+    setInterval(sort_loop, 5000)
+    setInterval(rss_loop, 3000)
 
     rss_loop()
 

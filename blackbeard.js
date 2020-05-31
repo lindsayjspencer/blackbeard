@@ -1,5 +1,14 @@
 'use strict';
 
+function zro(arr) {
+    var z = {};
+    if (arr.typeOf == Array) {
+        arr.forEach((item) => {
+
+        })
+    }
+}
+
 const Parser = require('rss-parser');
 const fs = require('fs');
 const cpx = require('cpx-fixed');
@@ -13,7 +22,7 @@ const transmission = new Transmission({
 
 var activeTorrents;
 
-var download_dir = path.join(__dirname, 'torrents')
+var download_dir = path.join(__dirname, 'incomplete')
 
 module.exports = {
     activeTorrents: activeTorrents,
@@ -25,49 +34,65 @@ module.exports = {
             cb(res)
         })
     },
-    getFeed: function() {
+    pingFeed: function(url, cb) {
+
+            (async () => {
+
+                let feed = await parser.parseURL(url);
+                cb(feed)
+
+            })();
+    },
+    getFeed: function(url) {
         (async () => {
 
-            let feed = await parser.parseURL('http://showrss.info/user/20256.rss?magnets=true&namespaces=true&name=clean&quality=sd&re=null');
-            console.log(feed.items.length + " feed items")
-			transmission.get().then(allTorrents => {
-            	feed.items.forEach(item => {
-					// console.log(item)
-                	item.mglnk = item.link.substring(20, 52).toUpperCase()
-                	var trip = false;
-					allTorrents.torrents.forEach((t) => {
-	                    t.mglnk = t.magnetLink.substring(20, 52).toUpperCase()
-	                    if (t.mglnk == item.mglnk) {
-	                        trip = true;
-	                    }
-	                })
-	                if (!trip) {
-	                    this.addTorrent(item.link, function(res) {
-	                        // console.log("Torrent added: " + item.title)
-	                        // Get the file information first
-	                        res.title = item.title
-	                        var jsonContent = JSON.stringify(res);
-							if (fs.existsSync("data/torrent." + res.hashString + ".json")) {
-								//file exists
-								// console.log("already exists")
-								transmission.remove(res.id)
-								console.log("Duplicate, not added: " + res.title)
-							} else {
-								fs.writeFile("data/torrent." + res.hashString + ".json", jsonContent, 'utf8', function(err) {
-									if (err) {
-										console.log("An error occured while writing JSON Object to File.");
-										return console.log(err);
-									}
-									console.log("Torrent added: " + res.title);
-								});
-							}
+            var dups = 0
+            var already = 0
+            let feed = await parser.parseURL(url);
+            transmission.get().then(allTorrents => {
+                feed.items.forEach(item => {
+                    // console.log(item)
+                    item.mglnk = item.link.substring(20, 52).toUpperCase()
+                    var trip = false;
+                    allTorrents.torrents.forEach((t) => {
+                        t.mglnk = t.magnetLink.substring(20, 52).toUpperCase()
+                        if (t.mglnk == item.mglnk) {
+                            trip = true;
+                        }
+                    })
+                    if (!trip) {
+                        this.addTorrent(item.link, function(res) {
+                            // console.log("Torrent added: " + item.title)
+                            // Get the file information first
+                            res.title = item.title
+                            var jsonContent = JSON.stringify(res);
+                            if (fs.existsSync("data/torrent." + res.hashString + ".json")) {
+                                //file exists
+                                // console.log("already exists")
+                                transmission.remove(res.id)
+                                // console.log("Duplicate, not added: " + res.title)
+                                dups++
+                            } else {
+                                fs.writeFile("data/torrent." + res.hashString + ".json", jsonContent, 'utf8', function(err) {
+                                    if (err) {
+                                        console.log("An error occured while writing JSON Object to File.");
+                                        return console.log(err);
+                                    }
+                                    console.log("Torrent added: " + res.title);
+                                });
+                            }
 
-	                    })
-	                } else {
-	                    console.log("Already downloading: " + item.title)
-	                }
-	            })
-			})
+                        })
+                    } else {
+                        // console.log("Already downloading: " + item.title)
+                        already++
+                    }
+                })
+                var added = feed.items.length - dups - already
+                var added_t = (added != 0) ? `, added ${added}` : ", none added"
+                console.log(feed.items.length + " feed items" + added_t)
+
+            })
 
         })();
     },
@@ -76,6 +101,13 @@ module.exports = {
             "download-dir": download_dir
         }).then(res => {
             cb(res)
+        })
+    },
+    waitFor: function(id) {
+        transmission.waitForState(id, 'SEED').then(res => {
+            console.log("state change")
+            this.sortTorrents()
+
         })
     },
     removeTorrent: function(id) {
@@ -113,9 +145,6 @@ module.exports = {
     },
     getTorrents: function(cb) {
         transmission.get().then(res => {
-            res.torrents.forEach((torrent)=>{
-
-            })
             cb(res)
         })
     },
@@ -135,8 +164,8 @@ module.exports = {
     },
     forceStart: function(id) {
         transmission.startNow(id).then(res => {
-			console.log("force started " + id)
-		})
+            console.log("force started " + id)
+        })
     },
     sortTorrents: function() {
         var torStats = {
@@ -158,39 +187,45 @@ module.exports = {
                     if (tor.percentDone == 1) {
                         torStats.complete++
                         fs.readFile('data/torrent.' + tor.hashString + '.json', 'utf8', (err, data) => {
-                            if (err) throw err
-                            var torstore = JSON.parse(data)
-                            try {
-                                var torName
-                                if(torstore.title=='.') {
-                                    torName = tor.name
-                                } else {
-    								torName = torstore.title//.replace("", "")
-                                }
-                                if (fs.existsSync('downloads/' + torName)) {
-                                    //file exists
-                                    // console.log("already exists")
-									transmission.remove(tor.id)
-									console.log("torrent removed")
-                                } else {
-                                    torStats.copied++
-                                    console.log("copying file: " + tor.name)
-                                    const { exec } = require("child_process");
+                            if (!err) {
+                                var torstore = JSON.parse(data)
+                                try {
+                                    var torName
+                                    if (torstore.title == '.') {
+                                        torName = tor.name
+                                    } else {
+                                        torName = torstore.title //.replace("", "")
+                                    }
+                                    if (fs.existsSync('downloads/' + torName)) {
+                                        //file exists
+                                        // console.log("already exists")
+                                        transmission.remove(tor.id)
+                                        console.log("torrent removed")
+                                    } else {
+                                        torStats.copied++
+                                        console.log("copying file: " + tor.name)
+                                        const {
+                                            exec
+                                        } = require("child_process");
 
-                                    exec('cp -r torrents/"' + tor.name + '" downloads/"' + torName + '"', (error, stdout, stderr) => {
-                                        if (error) {
-                                            console.log(`error: ${error.message}`);
-                                            return;
-                                        }
-                                        if (stderr) {
-                                            console.log(`stderr: ${stderr}`);
-                                            return;
-                                        }
-                                        console.log(`${stdout}`);
-                                    });
+                                        exec('cp -r incomplete/"' + tor.name + '" downloads/"' + torName + '"', (error, stdout, stderr) => {
+                                            if (error) {
+                                                console.log(`error: ${error.message}`);
+                                                return;
+                                            }
+                                            if (stderr) {
+                                                console.log(`stderr: ${stderr}`);
+                                                return;
+                                            }
+                                            console.log(`${stdout}`);
+                                        });
+                                    }
+                                } catch (err) {
+                                    console.error(err)
                                 }
-                            } catch (err) {
-                                console.error(err)
+                            } else {
+                                console.log("file error")
+                                console.log(tor.hashString)
                             }
                         });
                     } else {
@@ -231,9 +266,9 @@ module.exports = {
                             break
                     }
                 })
-                console.log(torStats)
+                // console.log(torStats)
             } else {
-                console.log("No active torrents.")
+                // console.log("No active torrents.")
             }
         })
     }

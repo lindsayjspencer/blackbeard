@@ -1,121 +1,23 @@
 #!/usr/bin/env node
-var port = process.env.PORT || 4000;
+require('./core')()
 
-let Blackbeard = require('./blackbeard')
-// file system module to perform file operations
-const fs = require('fs');
-function sleep(millis) {
-    return new Promise(resolve => setTimeout(resolve, millis));
-}
+lg("Initialising");
 
-var express = require('express');
-var app = express();
-var http = require('http').Server(app);
-var io = require('socket.io')(http, {
-    pingInterval: 1000,
-    pingTimeout: 3000
-});
+const { express, app, http, io } = require('./scripts/express-core')
 
-app.get('/', function(req, res) {
-    res.sendFile(__dirname + '/index.html');
-});
+lg("Loaded server and socket.io libraries");
 
-app.get('/play', function(req, res) {
-    res.sendFile('/home/lindsay/Node/blackbeard/downloads/Rick and Morty 4x08 The Vat of Acid Episode/rick.and.morty.s04e08.webrip.x264-btx.mkv');
-});
+let ExpressSetup = require('./scripts/express-setup')
+new ExpressSetup(app, express).init()
 
-console.log("\n/// Initialising");
-console.log("\n/// Starting http server on port " + port);
+lg("http server config initialised");
 
+let ExpressRoutes = require('./scripts/express-routes')
+new ExpressRoutes(app).init()
 
-app.use(express.static('js'))
-app.use(express.static('img'))
-app.use(express.static('css'))
-app.use(express.static('downloads'))
-app.use(express.static('node_modules'))
+lg("http routes activated");
 
-io.sockets.on('connection', function(socket) {
+let SocketRoutes = require('./socket-routes')
+new SocketRoutes(io).init()
 
-    console.log(Math.floor(Date.now() / 1000) + ": New connection");
-    socket.on('checkping', function(msg) {
-        // get info
-        Blackbeard.getTorrents(function(res) {
-            // console.log(res.torrents)
-            var msg = {
-                torrents: []
-            }
-            var _tor
-            res.torrents.forEach((tor)=>{
-                _tor = {
-                    id: tor.id,
-                    leftUntilDone: tor.leftUntilDone,
-                    status: tor.status,
-                    rateDownload: tor.rateDownload,
-                    percentDone: tor.percentDone
-                }
-                msg.torrents.push(_tor)
-            })
-            io.emit('update', msg);
-        })
-    });
-    socket.on('sendList', function(msg) {
-        // get info
-        Blackbeard.getTorrents(function(res) {
-            // console.log(res.torrents)
-            var msg = {
-                torrents: []
-            }
-            var _tor
-            res.torrents.forEach((tor)=>{
-                fs.readFile('data/torrent.' + tor.hashString + '.json', 'utf8', (err, data) => {
-                    if (err) throw err
-                    var torstore = JSON.parse(data)
-                    try {
-                        var torName
-                        if(torstore.title=='.') {
-                            torName = tor.name
-                        } else {
-                            torName = torstore.title//.replace("", "")
-                        }
-                        _tor = {
-                            name: torName,
-                            id: tor.id,
-                            leftUntilDone: tor.leftUntilDone,
-                            status: tor.status,
-                            rateDownload: tor.rateDownload,
-                            percentDone: tor.percentDone,
-                            lastUpdated: Date.now()
-                        }
-                        io.emit('torrentInfo', _tor);
-                    } catch (err) {
-                        console.error(err)
-                    }
-                });
-            })
-        })
-    });
-    socket.on('disconnect', function() {
-        console.log(Math.floor(Date.now() / 1000) + ": " + 'Disconnected');
-    });
-    socket.on('pause', function() {
-        Blackbeard.getAll(function(){
-            Blackbeard.pauseAll()
-            io.emit('msg', 'paused all')
-        })
-    });
-    socket.on('start', function() {
-        Blackbeard.startAll()
-        io.emit('msg', 'started all')
-    });
-    socket.on('remove', function() {
-        Blackbeard.getAll(function(){
-            Blackbeard.removeAll()
-            io.emit('msg', 'removed all')
-        })
-    });
-
-});
-
-http.listen(port, function() {
-    console.log(Math.floor(Date.now() / 1000) + ": " + 'listening on *:' + port);
-});
+lg("Socket routes activated");

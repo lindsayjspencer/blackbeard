@@ -1,0 +1,693 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>Blackbeard</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+    <script src="/jquery/dist/jquery.min.js"></script>
+    <link defer type="text/css" rel="stylesheet" href="/bootstrap/dist/css/bootstrap.min.css">
+    <link type="text/css" rel="stylesheet" href="/main.css">
+    <link defer rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.11.2/css/all.css" integrity="sha256-46qynGAkLSFpVbEBog43gvNhfrOj+BmwXdxFgVK/Kvc=" crossorigin="anonymous">
+    <script src="/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="/tween.umd.js"></script>
+    <!-- <script src="/search.js" type="module"></script> -->
+    <!-- <script src="https://cdn.socket.io/socket.io-1.7.3.js"></script> -->
+    <script src="http://localhost:4000/socket.io/socket.io.js" type="text/javascript"></script>
+</head>
+
+<body>
+    <div class="game-screen d-flex flex-column align-items-center">
+        <div class="main-logo mb-2 mt-auto">
+            <i class="fas fa-skull fa-3x text-warning"></i>
+        </div>
+        <h3 class="mt-2">
+            Blackbeard
+        </h3>
+        <div class="d-flex flex-row game-screen-options init-loading justify-content-center mt-3 w-100 text-black-50">
+            <span class="loading mr-2">Loading</span>
+            <span>
+                <i class="fas fa-spinner fa-spin fa-fw fa-lg"></i>
+            </span>
+        </div>
+        <div class="input-group game-screen-options hide mb-auto">
+            <button class="btn btn-outline-secondary init-btn m-auto btn-block" type="button">Initiate</button>
+        </div>
+    </div>
+    <div class="torrents-container d-flex flex-column w-100">
+
+    </div>
+
+    <div class="card rounded-0 mb-2 right-panel position-fixed" style="">
+        <div class="card rounded-0 mb-2 right-panel-outer position-absolute" style="">
+            <div class="d-flex flex-column">
+                <h4 class="p-3 card-title d-flex align-items-center">
+                    Episodes
+                </h4>
+                <div class="ep-container"></div>
+            </div>
+        </div>
+        <div class="card rounded-0 mb-2 right-panel-inner position-absolute" style="">
+            <div class="tv-show-poster-img"></div>
+            <a href="#" class="p-3 text-center is-subscribed-btn btn btn-primary btn-block rounded-0 border-0"></a>
+            <div class="p-3 d-flex flex-column">
+                <h4 class="card-title d-flex align-items-center tv-show-title">
+                    Title
+                </h4>
+                <small class="text-muted tv-show-actors"></small>
+                <p class="tv-show-plot"></p>
+            </div>
+        </div>
+        <div class="p-3 d-flex flex-column dragonfly-search-panel">
+            <h4 class="card-title d-flex align-items-center">
+                Search
+                <small class="df-result-small text-muted ml-auto mr-2"></small>
+            </h4>
+            <div class="form-group m-0">
+                <div class="form-label-group">
+                    <input autocomplete="new-password" name="dragonflySearch" id="dragonflySearch" class="w-100 form-control mr-sm-2" placeholder="TV show title" aria-label="TV show title" value="">
+                    <label for="dragonflySearch" class="cutoff">TV show title</label>
+                </div>
+            </div>
+        </div>
+        <div style="" class="d-flex flex-column selected-list-rp flex-fill"></div>
+    </div>
+
+    <div class="align-items-center bottom-card position-fixed rounded-0 w-100 d-flex">
+        <h3 class="masthead-brand m-3"><i class="fas fa-skull text-warning mr-3"></i>Blackbeard</h3>
+        <div class="btn-group dropup">
+            <button type="button" class="p-4 no-arrow btn btn-dark dropdown-toggle rounded-0 btn-lg" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <i class="fas fa-code fa-fw"></i>
+            </button>
+            <div class="dropdown-menu rounded-0 m-0" aria-labelledby="dropdownMenu2">
+                <button class="dropdown-item restart-monitor-btn" type="button">Restart monitor</button>
+                <button class="dropdown-item restart-daemon-btn" type="button">Restart daemon</button>
+                <button class="dropdown-item utility-btn" type="button">Uitility action</button>
+            </div>
+        </div>
+        <button class="p-4 show-search-btn no-arrow btn btn-dark rounded-0 btn-lg">
+            <i class="fas fa-tv fa-fw"></i>
+        </button>
+        <span class="console-log pl-3"></span>
+        <div class="d-flex flex-row btn-group tor-toolbar ml-auto">
+            <div class="btn-group dropup">
+                <button type="button" class="p-4 no-arrow btn btn-dark dropdown-toggle rounded-0" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    <span class="torrent-total mr-2"></span>torrent<span class="torrent-total-s">s</span>
+                </button>
+                <div class="dropdown-menu rounded-0 m-0" aria-labelledby="dropdownMenu2">
+                    <button class="dropdown-item stop-btn" type="button">Stop all</button>
+                    <button class="dropdown-item start-btn" type="button">Start all</button>
+                    <button class="dropdown-item remove-btn" type="button">Remove all</button>
+                    <button class="dropdown-item sort-btn" type="button">Sort torrents</button>
+                </div>
+            </div>
+            <div class="btn-group dropup">
+                <button type="button" class="p-4 add-dropdown-toggle no-arrow btn-dark btn-lg btn dropdown-toggle rounded-0" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    <i class="fas fa-plus fa-fw"></i>
+                </button>
+                <div class="dropdown-menu p-0 rounded-0 m-0">
+                    <textarea class="form-control magnet-link-textarea" placeholder="paste magnet link here"></textarea>
+                    <button class="add-magnet-btn btn btn-dark rounded-0 w-100" href="#">Add torrent</button>
+                </div>
+            </div>
+            <!-- <button type="button" class="btn btn-dark rounded-0 open-feeds-panel-btn">
+                RSS
+            </button>
+            <div class="btn-group dropup">
+                <button type="button" class="no-arrow btn btn-primary btn-lg dropdown-toggle rounded-0" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    <i class="fas fa-plus"></i>
+                </button>
+                <div class="dropdown-menu p-0 rounded-0 m-0">
+                    <textarea class="form-control rss-link-textarea" placeholder="paste rss link here"></textarea>
+                    <input type="text" class="feed-name-input form-control rounded-0 w-100" placeholder="Feed title">
+                    <button class="add-feed-btn btn btn-dark rounded-0 w-100" href="#">Add Feed</button>
+                </div>
+            </div> -->
+        </div>
+    </div>
+
+    <script type="module">
+        import Search from './search.js'
+
+        var searchterm = "keene";
+
+        var showSearch;
+
+        var allShows;
+
+
+        var activeTorrents, updateLoop, listLoop, displayLoop, cleanupLoop, animateLoop, tids, prevtime;
+
+        var activeTorrents = [];
+
+        var torrs = [];
+
+        var avgTimeLeft;
+
+        var latestUpdateTime;
+
+        var feeds = [];
+
+        var rpmd = false;
+
+        var uiInitiated = false;
+
+        var socket;
+
+        function getShows(cb = function() {}) {
+            $.ajax("/get-all-shows", {}, function() {}, 'json')
+                .done(function(data) {
+                    allShows = [];
+                    var rt;
+                    data.list.forEach((show) => {
+                        rt = 3
+                        if (show.omdb != undefined) {
+                            if (show.omdb.Response == "False") {
+                                // console.log(show)
+                            } else {
+                                rt = parseFloat(show.omdb.imdbRating)
+                            }
+                        }
+                        allShows.push({
+                            term: show.name,
+                            id: show.id,
+                            omdb: show.omdb,
+                            preMultiply: rt,
+                            subscribed: show.subscribed
+                        })
+                    })
+                    console.log("Show index reloaded.")
+                    cb();
+                });
+        }
+
+        function socketListenersOn() {
+
+            socket.on('connect', function(res) {
+                console.log("connected!");
+                onSocketConnection();
+            });
+
+            socket.on('msg', function(msg) {
+                console.log(msg);
+                $(".console-log").html(msg);
+            });
+
+            socket.on('get_rss_feed', function(feed) {
+                // console.log(feed)
+                var quality;
+                var icon = `<i class="fas fa-cloud-download-alt p-4 ml-auto"></i>`;
+                $(".ep-container").html('');
+                feed.items.forEach((ep) => {
+                    quality = "";
+                    var epDetails = ep.title.match(/(\d+)x(\d{1,3})/gi);
+                    var season = ep.title;
+                    if (epDetails) {
+                        console.log(epDetails)
+                        season = epDetails[0];
+                    }
+                    $(".ep-container").append(
+                        `<a href="#" class="btn btn-block py-0 pl-3 pr-0 mt-0 rounded-0 d-flex flex-row ep-result-btn align-items-center border-top-0">
+                            <div class="text-truncate m-3">
+                                <h6 class="text-left text-truncate m-0">
+                                    ${season}
+                                </h6>
+                               <small class="text-left text-secondary text-truncate">${quality}</small>
+                            </div>
+                            ${icon}
+                        </a>`
+                    );
+                });
+            });
+
+            socket.on('subscribe_toggle', function(msg) {
+                getShows();
+            });
+
+            socket.on('send_rss_feeds', function(_feeds) {
+                console.log(_feeds);
+                feeds = _feeds;
+                update_feeds_panel();
+            });
+
+            socket.on('bb.get-info', function(torrent) {
+                latestUpdateTime = Date.now();
+                var find = false;
+                activeTorrents.forEach((tor) => {
+                    if (tor.id == torrent.id) {
+                        find = true;
+                    }
+                });
+                if (!find) {
+                    activeTorrents.push(torrent);
+                }
+                // $(".torrents-container").html('');
+                if ($(".torrent-container-" + torrent.id).length == 0) {
+                    // draw torrent
+                    var percent = Math.round(torrent.percentDone * 10000) / 100 + "%";
+                    var widthperc = Math.round(torrent.percentDone * 10000) / 100;
+                    if (parseFloat(widthperc) > !9) {
+                        widthperc = '';
+                    } else {
+                        widthperc = widthperc + "%";
+                    }
+                    var timeleft = (Math.round(torrent.leftUntilDone / torrent.rateDownload));
+                    if (torrent.rateDownload == 0) {
+                        timeleft = "--";
+                    } else {
+                        avgTimeLeft = Math.round(timeleft);
+                        var minutesleft = Math.floor(avgTimeLeft / 60);
+                        var secondsleft = Math.floor(avgTimeLeft % 60);
+                        if (secondsleft < 10) {
+                            secondsleft = "0" + secondsleft;
+                        }
+                        timeleft = minutesleft + ":" + secondsleft;
+                    }
+                    torrent.name = torrent.name.replace(/x264|AC3|mp4|mkv|\+|[\[\]\(\)]/gi, "");
+                    console.log("draw");
+                    $(".torrents-container").append(`
+                        <div class="torr torrent-container-${torrent.id} d-flex flex-column mb-5" data-tid=${torrent.id}>
+                            <div class="d-flex flex-row w-100 mb-2">
+                                <div class="name text-truncate">${torrent.name}</div>
+                                <div class="time ml-auto" data-prevtime=0>${timeleft}</div>
+                            </div>
+                            <div class="progress">
+                                <div class="progress-bar" role="progressbar" style="width: ${percent};" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">${widthperc}</div>
+                            </div>
+                        </div>
+                    `);
+                }
+            });
+
+            socket.on('bb.get', function(torrents) {
+                torrents.torrents.forEach((tor) => {
+                    activeTorrents.forEach((item) => {
+                        if (item.id == tor.id) {
+                            item.leftUntilDone = tor.leftUntilDone;
+                            item.rateDownload = tor.rateDownload;
+                            item.percentDone = tor.percentDone;
+                            item.lastUpdated = Date.now();
+                        }
+                    });
+                });
+            });
+        }
+
+        function initiateDragonSearch(cb) {
+
+            getShows(() => {
+
+                var results_panel = $(".right-panel .selected-list-rp");
+
+                $(document).on('keydown', function(e) {
+                    if ((e.ctrlKey || e.metaKey) && e.shiftKey && (String.fromCharCode(e.which).toLowerCase() === 'f')) {
+                        $(".right-panel").toggleClass("show");
+                        $("#dragonflySearch").val('');
+                        $(".df-result-small").html("");
+                        results_panel.html('');
+                        if ($(".right-panel").hasClass("show")) {
+                            setTimeout(function() {
+                                $("#dragonflySearch").focus();
+                            }, 200);
+                        }
+                    }
+                });
+                $('#dragonflySearch').on('keyup', function(e) {
+                    switch (e.keyCode) {
+                        case 13:
+
+                            e.preventDefault();
+                            $(".show-selected").click();
+
+                            break;
+                        case 40:
+
+                            e.preventDefault();
+                            $(".show-selected").removeClass("show-selected").next("a").addClass("show-selected");
+                            if ($(".show-selected").length == 0) {
+                                $(".df-result-btn").first().addClass("show-selected");
+                            }
+
+                            break;
+                        case 38:
+
+                            e.preventDefault();
+                            $(".show-selected").removeClass("show-selected").prev("a").addClass("show-selected");
+                            if ($(".show-selected").length == 0) {
+                                $(".df-result-btn").first().addClass("show-selected");
+                            }
+
+                            break;
+                        default:
+
+                            searchterm = $(this).val();
+                            showSearch = new Search(searchterm, allShows).go();
+                            results_panel.html('');
+                            if (showSearch.error) {
+                                // console.log(clients.error);
+                                $(".df-result-small").html("...");
+                                if (showSearch.error == "No content") {
+                                    $(".df-result-small").html("");
+                                }
+                            } else {
+                                var x = 0;
+                                showSearch.matches.forEach(function(item) {
+                                    var details = `
+                                <small class="df-show-result-details text-left">Unknown</small>
+                            `;
+                                    var poster = `<div class="search-poster-img"></div>`;
+                                    var score = "?";
+                                    var genre = "?";
+                                    if (item.searchItem.omdb != undefined) {
+                                        if (item.searchItem.omdb.Response == "False") {
+                                            // console.log(item.searchItem)
+                                        } else {
+                                            // console.log(parseFloat(item.searchItem.omdb.imdbRating))
+                                            score = parseFloat(item.searchItem.omdb.imdbRating);
+                                            genre = item.searchItem.omdb.Genre;
+                                            details = `
+                                        <small class="df-show-result-details text-wrap text-left">${item.searchItem.omdb.Actors}</small>
+                                    `;
+                                            poster = `
+                                <img class="img-fluid search-poster-img ml-auto" src="${item.searchItem.omdb.Poster}">
+                                    `
+                                        }
+                                    }
+                                    // if(item.count>1.8) {
+                                    var isSelected = (x == 0) ? " show-selected" : "";
+                                    results_panel.append(
+                                        `<a href="#" class="btn${isSelected} btn-block p-0 mt-0 rounded-0 d-flex flex-row df-result-btn align-items-start border-top-0" data-show-id="${item.searchItem.id}">
+                                            <div class="d-flex flex-column p-3 text-truncate flex-fill">
+                                                <h6 class="df-show-result text-left justify-content-between text-truncate w-100 d-flex flex-row align-items-center">
+                                                    ${item.searchItem.term}
+                                                    <span>${score}</span>
+                                                </h6>
+                                               ${details}
+                                               <small class="text-left text-secondary text-truncate">${genre}</small>
+                                            </div>
+                                            ${poster}
+                                        </a>`
+                                    );
+                                    x++;
+                                    // }
+                                });
+                                var r = '';
+                                if (x != 1) {
+                                    r = 's';
+                                }
+                                $(".df-result-small").html(x + " result" + r);
+                                // console.log(clients.results);
+                            }
+                            break;
+                    }
+                });
+                cb();
+            })
+        }
+
+        function initiateUI() {
+
+            $(".magnet-link-textarea").on("keyup", function(e) {
+                if (e.keyCode == 13) {
+                    $(".add-magnet-btn").click();
+                }
+            });
+
+            $(".add-dropdown-toggle").on("click", function() {
+                setTimeout(function() {
+                    $(".magnet-link-textarea").focus();
+                }, 200);
+                $(".magnet-link-textarea").val('');
+            });
+
+            $(".stop-btn").on("click", function() {
+                socket.emit('bb.stop-all')
+            });
+
+            $(".start-btn").on("click", function() {
+                socket.emit('bb.start-all')
+            });
+
+            $(".remove-btn").on("click", function() {
+                socket.emit('bb.remove-all')
+            });
+
+            $(".sort-btn").on("click", function() {
+                socket.emit('bb.sort')
+            });
+
+            $(".ping-rss-btn").on("click", function() {
+                socket.emit('ping_rss')
+            });
+
+            $(".restart-monitor-btn").on("click", function() {
+                socket.emit('restart_monitor')
+            });
+
+            $(".restart-daemon-btn").on("click", function() {
+                socket.emit('bb.restart_daemon')
+            });
+
+            $(".utility-btn").on("click", function() {
+                socket.emit('bb.utility_function')
+            });
+
+            $(".add-magnet-btn").on("click", function() {
+                socket.emit('add_magnet', $(".magnet-link-textarea").val());
+            });
+
+            $(".add-feed-btn").on("click", function() {
+                socket.emit('add_rss', $(".feed-name-input").val(), $(".rss-link-textarea").val());
+            });
+
+            $(".is-subscribed-btn").on("click", function() {
+                var isSubscribed = ($(this).hasClass("btn-purple")) ? true : false;
+                var id = $(".show-selected").data("show-id");
+                var btn = $(this);
+                $(".is-subscribed-btn").toggleClass("btn-primary btn-purple");
+                if (isSubscribed) {
+                    $(".right-panel-outer").removeClass("show");
+                    $(".is-subscribed-btn").html('Not subscribed');
+                } else {
+                    $(".is-subscribed-btn").html('Subscribed');
+                    $(".right-panel-outer").addClass("show");
+                }
+                socket.emit('subscribe_toggle', id);
+            });
+
+            $(document.body).on("click", ".df-result-btn", function() {
+                var btn = $(this);
+                var id = btn.data("show-id");
+                allShows.forEach((show) => {
+                    if (show.id == id) {
+                        var isSubscribed = (show.subscribed != undefined) ? "Subscribed" : "Not subscribed";
+                        var isSubscribedClass = (show.subscribed != undefined) ? "btn-purple" : "btn-primary";
+                        $(".tv-show-title").html(show.omdb.Title);
+                        $(".tv-show-actors").html(show.omdb.Actors);
+                        $(".tv-show-plot").html(show.omdb.Plot);
+                        $(".is-subscribed-btn").html(isSubscribed);
+                        $(".is-subscribed-btn").removeClass("btn-purple btn-primary").addClass(isSubscribedClass);
+                        $(".tv-show-poster-img").css("background-image", "url(" + show.omdb.Poster + ")");
+                        $(".right-panel-inner").addClass("show");
+                        if (show.subscribed != undefined) {
+                            setTimeout(function() {
+                                $(".right-panel-outer").addClass("show")
+                            }, 200);
+                        } else {
+
+                            $(".right-panel-outer").removeClass("show")
+                        }
+                    }
+                });
+                $(".show-selected").removeClass("show-selected");
+                btn.addClass("show-selected");
+                socket.emit('get_rss_feed', id);
+            });
+
+            $(".show-search-btn").on("click", function() {
+                $(".right-panel").addClass("show");
+                setTimeout(function() {
+                    $("#dragonflySearch").focus();
+                }, 200);
+            });
+
+            $("body").on("click", function(e) {
+                if ($(e.target).closest(".right-panel, .bottom-card").length == 0 && !rpmd) {
+                    function hideInner() {
+                        $(".right-panel-inner").removeClass("show");
+                        setTimeout(function() {
+                            $(".right-panel").removeClass("show");
+                        }, 200);
+                    }
+                    if ($(".right-panel-outer").hasClass("show")) {
+                        $(".right-panel-outer").removeClass("show");
+                        setTimeout(hideInner, 200)
+                    } else {
+                        hideInner();
+                    }
+                }
+                rpmd = false;
+            });
+
+            $(".right-panel").on("mousedown", function() {
+                rpmd = true;
+            })
+        }
+
+        function initiateLoops() {
+
+            function update_loop() {
+                socket.emit('bb.get')
+            }
+
+            function list_loop() {
+                socket.emit('bb.get-info')
+            }
+
+            function display_loop() {
+                activeTorrents.forEach((item) => {
+                    if ($(".torrent-container-" + item.id).length == 0) {
+
+                    } else {
+                        // update torrent
+                        if (item.leftUntilDone !== undefined) {
+                            var widthperc = Math.round(item.percentDone * 10000) / 100;
+                            if (parseFloat(widthperc) > 9) {
+                                widthperc = widthperc + "%";
+                            } else {
+                                widthperc = '';
+                            }
+                            if (item.leftUntilDone == 0 || item.rateDownload == 0) {
+                                $(".torrent-container-" + item.id + " .time").html("--");
+                            } else {
+                                var timeRemaining = Math.round(item.leftUntilDone / item.rateDownload);
+                                prevtime = parseInt($(".torrent-container-" + item.id + " .time").data('prevtime'));
+                                avgTimeLeft = parseInt(prevtime * 15 + timeRemaining) / 16;
+                                avgTimeLeft = Math.round(avgTimeLeft);
+                                var minutesleft = Math.floor(avgTimeLeft / 60);
+                                var secondsleft = Math.floor(avgTimeLeft % 60);
+                                if (secondsleft < 10) {
+                                    secondsleft = "0" + secondsleft;
+                                }
+                                $(".torrent-container-" + item.id + " .time").html(minutesleft + ":" + secondsleft);
+                                $(".torrent-container-" + item.id + " .time").data('prevtime', avgTimeLeft);
+                            }
+                            // $(".torrent-container-"+item.id+" .status").html(item.status);
+                            $(".torrent-container-" + item.id + " .progress-bar").html(widthperc);
+                            $(".torrent-container-" + item.id + " .progress-bar").css("width", Math.round(item.percentDone * 10000) / 100 + "%");
+                        } else {
+                            $(".torrent-container-" + item.id + " .time").html("--");
+                        }
+                    }
+                });
+                var s = (activeTorrents.length != 1) ? "s" : "";
+                $(".torrent-total").html(activeTorrents.length);
+                $(".torrent-total-s").html(s);
+            }
+
+            function cleanup_loop() {
+                console.log("cleanup")
+                $(".torr").each(function() {
+                    var t = $(this);
+                    var find;
+                    find = false;
+                    activeTorrents.forEach((item, index, object) => {
+                        if (item.id == t.data('tid')) {
+                            // console.log("found "+item.id);
+                            find = true;
+                            if ((latestUpdateTime - item.lastUpdated) > 2000) {
+                                console.log("remove");
+                                $(".torrent-container-" + t.data('tid')).remove();
+                                object.splice(index, 1);
+                            }
+                        }
+                    })
+                })
+            }
+
+            function animate_loop() {
+                $(".progress-bar").each(function() {
+                    if (Math.random() > 0.7) {
+                        var bar = $(this);
+                        bar.css("box-shadow", "0px 0px " + Math.round(Math.random() * 16) + 8 + "px 0px #ffeb00");
+                    }
+                });
+            }
+
+            updateLoop = setInterval(update_loop, 400);
+            listLoop = setInterval(list_loop, 10000);
+            displayLoop = setInterval(display_loop, 400);
+            cleanupLoop = setInterval(cleanup_loop, 2000);
+            animateLoop = setInterval(animate_loop, 300);
+
+            list_loop();
+
+            function update_feeds_panel() {
+                $(".feeds-container").html('');
+                feeds.feeds.forEach((feed) => {
+                    $(".feeds-container").append(
+                        `
+                    <div class="d-flex flex-column">
+                        <span class="rss-title text-truncate">${feed.name}</span>
+                    </div>
+                        `
+                    )
+                })
+            }
+        }
+
+        function initiateSockets() {
+
+            socket = io.connect('http://localhost:4000/web');
+            // var testsocket = io.connect('http://localhost:4000/json.db');
+            //
+            // testsocket.emit("test", "string here")
+            // testsocket.on("test", res => {
+            //     console.log(res)
+            // })
+
+            socketListenersOn();
+
+        }
+
+        function onSocketConnection() {
+
+            if (!uiInitiated) {
+
+                initiateDragonSearch(() => {
+
+                    initiateUI();
+                    initiateLoops();
+
+                    console.log("UI initiated");
+                    uiInitiated = true;
+
+                });
+
+            }
+
+        }
+
+        window.onload = (e) => {
+            $(".game-screen-options").toggleClass("hide");
+            $("html").on("keyup", function(e) {
+                if (e.keyCode == 13) {
+                    $(".init-btn").click();
+                }
+            });
+            setTimeout(function() {
+                $(".init-btn").click();
+            }, 150);
+            $(".init-btn").on("click", function() {
+                initiateSockets();
+                $("html").off("keyup");
+                $("body").addClass("initiate");
+                setTimeout(function() {
+                    $(".game-screen").remove();
+                }, 600);
+            });
+        }
+    </script>
+</body>
+
+</html>

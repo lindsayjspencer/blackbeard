@@ -1,14 +1,15 @@
+
 [Unit]
-Description=Node.js Blackbeard web server
+Description=Node.js Blackbeard jSON.db
 
 [Service]
-PIDFile=/tmp/blackbeard-web.pid
+PIDFile=/tmp/bb-json.db.pid
 User=lindsay
 Group=lindsay
 Restart=always
 KillSignal=SIGQUIT
 WorkingDirectory=/home/lindsay/Node/blackbeard/
-ExecStart=/home/lindsay/Node/blackbeard/web.js
+ExecStart=/home/lindsay/Node/blackbeard/json.db/server.js
 
 [Install]
 WantedBy=multi-user.target
