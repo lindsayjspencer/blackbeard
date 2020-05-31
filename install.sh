@@ -24,10 +24,8 @@ mkdir -p downloads
 chmod 777 downloads
 mkdir -p data
 chmod 777 data
-echo ""
-echo "// Creating persistent torrent monitor"
-sudo cp lib/bb-json.db.service /etc/systemd/system/bb-json.db.service
-echo "> Created."
+mkdir -p incomplete
+chmod 777 incomplete
 echo ""
 echo "// Creating persistent web server"
 sudo cp lib/bb-web.service /etc/systemd/system/bb-web.service
@@ -35,14 +33,11 @@ echo "> Created."
 echo ""
 echo "// Modify to allow execution"
 sudo chmod +x web.js
-sudo chmod +x json.db/server.js
 echo "> Created."
 echo ""
 echo "// Enabling service"
 sudo systemctl daemon-reload
-sudo systemctl enable blackbeard-monitor.service
-sudo systemctl enable blackbeard-web.service
-sudo systemctl start blackbeard-monitor.service
-sudo systemctl start blackbeard-web.service
+sudo systemctl enable bb-web.service
+sudo systemctl start bb-web.service
 echo "> Service started."
 echo ""
