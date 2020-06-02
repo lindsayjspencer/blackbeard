@@ -41,19 +41,23 @@ class Statham {
 
     }
 
+    _get_entity(name) {
+        return this.entities.find((x) => x.name == name)
+    }
+
     read(ent, seq = false) {
 
-        var obj = this.entities.find((x) => x.name == ent)
+        var entity = this._get_entity(ent)
 
         if (!seq) {
             // return all
 
-            return obj.list
+            return entity.list
 
         } else {
 
             // get one entity instance by ID
-            var findItem = obj.list.find((x) => parseInt(x.id) == parseInt(seq))
+            var findItem = entity.list.find((x) => parseInt(x.id) == parseInt(seq))
 
             return findItem
 
@@ -85,8 +89,39 @@ class Statham {
     entity_info() {
         console.log("Statham.db entity info")
         this.entities.forEach(ent => {
-            console.log(`${ent.name} has ${ent.list.length} entries`)
+            if(ent.list!=undefined) {
+                console.log(`${ent.name} has ${ent.list.length} entries`)
+            }
         })
+    }
+
+    update(ent, id, data) {
+
+        var obj = this.read(ent, id);
+
+        for (var prop in data) {
+            if (Object.prototype.hasOwnProperty.call(data, prop)) {
+                // for each property of the original object
+                var found = false
+                for (var _prop in obj) {
+                    if (Object.prototype.hasOwnProperty.call(obj, _prop)) {
+                        if(prop == _prop) {
+                            // match, update
+                            obj[prop] = data[_prop]
+                            found = true
+                        }
+                    }
+                }
+                if(!found) {
+                    obj[prop] = data[prop]
+                }
+            }
+        }
+
+        saveFile(ent, this._get_entity(ent))
+
+        return obj
+
     }
 
     add_ids() {

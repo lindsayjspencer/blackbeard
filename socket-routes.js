@@ -31,10 +31,11 @@ class SocketRoutes {
             lg(`New connection: web client`);
 
             // database service
-            socket.on('utility_function', function(msg) {
+            socket.on('bb.utility-function', function(msg) {
 
-                obj.entity_info()
-                lg(obj.read("genres", 20))
+                // obj.db.entity_info()
+                console.log(obj.db.read("all-shows", 651))
+                // obj.db.update("all-shows", 20, { name: "Seth Meyers" })
                 lg(`Statham response`)
                 socket.emit('msg', `jSON.db is on.`)
 
@@ -131,7 +132,7 @@ class SocketRoutes {
                     socket.emit('msg', 'Transmission daemon restarted.')
                 })
             });
-            socket.on('add_magnet', function(magnetLink) {
+            socket.on('bb.add-magnet', function(magnetLink) {
                 // lg(magnetLink)
                 Blackbeard.addTorrent(magnetLink, function(res) {
                     res.title = "."
@@ -147,37 +148,29 @@ class SocketRoutes {
                     socket.emit('msg', 'magnet added: ' + res.name)
                 })
             });
-            socket.on('add_rss', function(name, url) {
-                // lg(magnetLink)
-                RSSFeeds.addFeed(name, url, function(res) {
-                    socket.emit('msg', 'RSS feed added: ' + name)
-                })
-            });
-            socket.on('ping_rss', function() {
-                Blackbeard.getFeed()
-                socket.emit('msg', 'feed pinged')
-            });
-            socket.on('get_feeds', function() {
-                RSSFeeds.feeds((_feeds) => {
-                    socket.emit('send_rss_feeds', _feeds)
-                })
-            });
-            socket.on('subscribe_toggle', function(id) {
+            socket.on('statham.toggle-subscribed', function(id) {
+                
+                var show = obj.db.read("all-shows", id)
 
-                let as = new AllShows()
+                var updateData = { subscribed: true }
 
-                as.toggleSubscribed(id, (toggled) => {
-                    socket.emit('msg', 'Subscribed')
-                    socket.emit('subscribe_toggle', 'Subscribed')
-                })
+                if(show.subscribed) {
+                    updateData.subscribed = false
+                }
+
+                obj.db.update("all-shows", id, updateData)
+
+                socket.emit('msg', 'Subscribed')
+                socket.emit('statham.toggle-subscribed', 'Subscribed')
+
 
             });
-            socket.on('get_rss_feed', function(id) {
+            socket.on('bb.get-rss-feed', function(id) {
 
                 var url = `https://showrss.info/show/${parseInt(id)}.rss`
 
-                Blackbeard.pingFeed(url, (feed) => {
-                    socket.emit('get_rss_feed', feed)
+                Bb.pullFeed(url).then((feed) => {
+                    socket.emit('bb.get-rss-feed', feed)
                     lg("Feed received and sent to web client.")
                 })
 

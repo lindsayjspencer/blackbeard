@@ -16,6 +16,12 @@ class Blackbeard {
 
     }
 
+    async pullFeed(url) {
+
+        return await parser.parseURL(url);
+
+    }
+
     get(cb) {
         transmission.get().then(res => {
             cb(res)

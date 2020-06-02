@@ -193,7 +193,7 @@
                 $(".console-log").html(msg);
             });
 
-            socket.on('get_rss_feed', function(feed) {
+            socket.on('bb.get-rss-feed', function(feed) {
                 // console.log(feed)
                 var quality;
                 var icon = `<i class="fas fa-cloud-download-alt p-4 ml-auto"></i>`;
@@ -220,14 +220,8 @@
                 });
             });
 
-            socket.on('subscribe_toggle', function(msg) {
+            socket.on('statham.toggle-subscribed', function(msg) {
                 getShows();
-            });
-
-            socket.on('send_rss_feeds', function(_feeds) {
-                console.log(_feeds);
-                feeds = _feeds;
-                update_feeds_panel();
             });
 
             socket.on('bb.get-info', function(torrent) {
@@ -436,28 +430,16 @@
                 socket.emit('bb.sort')
             });
 
-            $(".ping-rss-btn").on("click", function() {
-                socket.emit('ping_rss')
-            });
-
-            $(".restart-monitor-btn").on("click", function() {
-                socket.emit('restart_monitor')
-            });
-
             $(".restart-daemon-btn").on("click", function() {
                 socket.emit('bb.restart_daemon')
             });
 
             $(".utility-btn").on("click", function() {
-                socket.emit('bb.utility_function')
+                socket.emit('bb.utility-function')
             });
 
             $(".add-magnet-btn").on("click", function() {
-                socket.emit('add_magnet', $(".magnet-link-textarea").val());
-            });
-
-            $(".add-feed-btn").on("click", function() {
-                socket.emit('add_rss', $(".feed-name-input").val(), $(".rss-link-textarea").val());
+                socket.emit('bb.add-magnet', $(".magnet-link-textarea").val());
             });
 
             $(".is-subscribed-btn").on("click", function() {
@@ -472,7 +454,7 @@
                     $(".is-subscribed-btn").html('Subscribed');
                     $(".right-panel-outer").addClass("show");
                 }
-                socket.emit('subscribe_toggle', id);
+                socket.emit('statham.toggle-subscribed', id);
             });
 
             $(document.body).on("click", ".df-result-btn", function() {
@@ -480,8 +462,8 @@
                 var id = btn.data("show-id");
                 allShows.forEach((show) => {
                     if (show.id == id) {
-                        var isSubscribed = (show.subscribed != undefined) ? "Subscribed" : "Not subscribed";
-                        var isSubscribedClass = (show.subscribed != undefined) ? "btn-purple" : "btn-primary";
+                        var isSubscribed = (show.subscribed) ? "Subscribed" : "Not subscribed";
+                        var isSubscribedClass = (show.subscribed) ? "btn-purple" : "btn-primary";
                         $(".tv-show-title").html(show.omdb.Title);
                         $(".tv-show-actors").html(show.omdb.Actors);
                         $(".tv-show-plot").html(show.omdb.Plot);
@@ -489,7 +471,7 @@
                         $(".is-subscribed-btn").removeClass("btn-purple btn-primary").addClass(isSubscribedClass);
                         $(".tv-show-poster-img").css("background-image", "url(" + show.omdb.Poster + ")");
                         $(".right-panel-inner").addClass("show");
-                        if (show.subscribed != undefined) {
+                        if (show.subscribed) {
                             setTimeout(function() {
                                 $(".right-panel-outer").addClass("show")
                             }, 200);
@@ -501,7 +483,7 @@
                 });
                 $(".show-selected").removeClass("show-selected");
                 btn.addClass("show-selected");
-                socket.emit('get_rss_feed', id);
+                socket.emit('bb.get-rss-feed', id);
             });
 
             $(".show-search-btn").on("click", function() {
