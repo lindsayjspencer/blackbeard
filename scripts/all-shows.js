@@ -2,7 +2,7 @@ let JsonDB = require('../json.db/json.db')
 const fs = require('fs');
 const path = require('path');
 
-var jsonObj = new JsonDB("all-shows")
+var jsonObj = new JsonDB("shows")
 
 function lg(msg) {
     console.log(msg)

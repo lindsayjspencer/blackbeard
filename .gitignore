@@ -1,5 +1,4 @@
 node_modules
-data
-torrents
-downloads
-incomplete
+blackbeard/data
+blackbeard/downloads
+blackbeard/incomplete

@@ -1,5 +1,6 @@
 #!/bin/bash
 
+cd ../
 echo "// Uninstalling transmission"
 sudo /etc/init.d/transmission-daemon stop
 echo "> Daemon service stopped."
@@ -10,12 +11,12 @@ sudo apt-get -qq purge transmission-remote-cli -y
 echo "> Transmission remote cli uninstalled successfully."
 
 echo "// Clearing Blackbeard"
-sudo rm -r torrents/*
-echo "> torrents/* cleared"
-sudo rm -r downloads/*
-echo "> downloads/* cleared"
-sudo rm -r data/*
-echo "> data/* cleared"
+sudo rm -r blackbeard/torrents/*
+echo "> blackbeard/torrents/* cleared"
+sudo rm -r blackbeard/downloads/*
+echo "> blackbeard/downloads/* cleared"
+sudo rm -r blackbeard/data/*
+echo "> blackbeard/data/* cleared"
 echo ""
 echo "// Disabling service"
 sudo systemctl stop blackbeard-monitor.service

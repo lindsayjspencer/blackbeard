@@ -4,7 +4,7 @@
     "description": "",
     "main": "web.js",
     "scripts": {
-        "start": "nodemon web.js --ext js"
+        "start": "nodemon index.js --ext js"
     },
     "keywords": [],
     "author": "",

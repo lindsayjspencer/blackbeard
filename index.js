@@ -17,7 +17,7 @@ new ExpressRoutes(app).init()
 
 lg("http routes activated");
 
-let SocketRoutes = require('./socket-routes')
+let SocketRoutes = require('./scripts/socket-routes')
 new SocketRoutes(io).init()
 
 lg("Socket routes activated");

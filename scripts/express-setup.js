@@ -14,9 +14,7 @@ class ExpressSetup {
 
     init() {
 
-        this.app.use(this.express.static('js'))
-        this.app.use(this.express.static('img'))
-        this.app.use(this.express.static('css'))
+        this.app.use(this.express.static('public'))
         this.app.use(this.express.static('downloads'))
         this.app.use(this.express.static('node_modules'))
 

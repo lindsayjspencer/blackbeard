@@ -5,7 +5,7 @@ let AllShows = require('./all-shows')
 // Shows.addShow("North Beach Coast Riot", 210, function(sho){ console.log("done") });
 // Shows.removeShow(210, function(sho){ console.log("done") });
 
-// var shows = new JsonDB("all-shows")
+// var shows = new JsonDB("shows")
 
 // shows.add({
 //     name: "Fear The Walking Dead",

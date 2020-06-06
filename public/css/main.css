@@ -236,7 +236,7 @@ body {
     display: flex;
     -ms-flex-pack: center;
     -webkit-box-pack: center;
-    justify-content: center;
+    justify-content: flex-start;
     color: #fff;
     /* text-shadow: 0 .05rem .1rem rgba(0, 0, 0, .5); */
     box-shadow: inset 0 0 5rem rgba(0, 0, 0, .5);
@@ -341,7 +341,7 @@ body {
     max-height: calc(100vh - 48px);
     min-height: calc(100vh - 48px);
     border: none;
-    --twidth: 26rem;
+    --twidth: 14rem;
     max-width: var(--twidth);
     min-width: var(--twidth);
     background: #280075;
@@ -395,7 +395,16 @@ body {
     background: #191919;
 }
 
-.show-search-btn, .add-dropdown-toggle {
+.console-log {
+    color: #272c31;
+}
+
+.show-search-btn {
+    background: #272c31;
+    border-color: #272c31;
+}
+
+.add-dropdown-toggle {
     background: #2b3035;
     border-color: #2b3035;
 }
@@ -493,10 +502,29 @@ body {
     font-weight: 700;
 }
 
+.start-torrent-btn, .stop-torrent-btn {
+    max-width: 10rem;
+    transition: max-width 150ms ease-in-out,
+                padding 150ms ease-in-out;
+    overflow: hidden;
+    padding: 0.25rem 0.8rem;
+}
+
+.start-torrent-btn.hide, .stop-torrent-btn.hide {
+    max-width: 0rem;
+    padding: 0.25rem 0rem;
+}
+
+.torrents-container {
+    margin-bottom: 80px;
+    max-width: 30rem;
+}
+
 .torrents-container .progress {
     height: 1.4rem;
     background: transparent;
     background-image: linear-gradient(to right, #57abff40, #004b96);
+    border-radius: 0.7rem;
 }
 
 .torrents-container .progress-bar {
@@ -505,6 +533,7 @@ body {
     text-shadow: none;
     box-shadow: 0px 0px 31px 0px #ffeb00;
     transition: width 600ms ease, box-shadow 3000ms ease;
+    border-radius: 0.7rem;
 }
 
 .initiate .bottom-card {

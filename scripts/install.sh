@@ -1,5 +1,6 @@
 #!/bin/bash
 
+cd ../
 echo "// Installing transmission"
 sudo apt-get -qq install transmission-daemon -y
 echo "> Transmission daemon installed successfully."
@@ -16,28 +17,26 @@ echo "> Daemon service restarted."
 echo ""
 
 echo "// Installing Blackbeard"
-npm i --silent
+# npm i --silent
 echo "> Installed."
-mkdir -p torrents
-chmod 777 torrents
-mkdir -p downloads
-chmod 777 downloads
-mkdir -p data
-chmod 777 data
-mkdir -p incomplete
-chmod 777 incomplete
+# mkdir -p blackbeard/downloads
+# chmod 777 blackbeard/downloads
+# mkdir -p blackbeard/data
+# chmod 777 blackbeard/data
+# mkdir -p blackbeard/incomplete
+# chmod 777 blackbeard/incomplete
 echo ""
 echo "// Creating persistent web server"
-sudo cp lib/bb-web.service /etc/systemd/system/bb-web.service
+sudo cp lib/blackbeard.service /etc/systemd/system/blackbeard.service
 echo "> Created."
 echo ""
 echo "// Modify to allow execution"
-sudo chmod +x web.js
+sudo chmod +x index.js
 echo "> Created."
 echo ""
 echo "// Enabling service"
 sudo systemctl daemon-reload
-sudo systemctl enable bb-web.service
-sudo systemctl start bb-web.service
+sudo systemctl enable blackbeard.service
+sudo systemctl start blackbeard.service
 echo "> Service started."
 echo ""
