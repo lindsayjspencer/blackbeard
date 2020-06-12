@@ -1,5 +1,7 @@
 #!/usr/bin/env node
 require('../core')()
+const Parser = require('rss-parser');
+const parser = new Parser();
 
 var ShowsDb;
 
@@ -15,6 +17,12 @@ class ShowController {
         // GenresDb = st.get("genres")
         // DirectorsDb = st.get("directors")
         // WritersDb = st.get("writers")
+
+    }
+
+    async pullFeed(url) {
+
+        return await parser.parseURL(url);
 
     }
 

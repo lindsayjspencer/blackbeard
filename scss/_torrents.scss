@@ -1,0 +1,45 @@
+/* torrents.scss */
+
+.torrents-container {
+
+    margin-bottom: 80px;
+    max-width: 30rem;
+
+    .progress {
+
+        height: 1.4rem;
+        background: transparent;
+        background-image: linear-gradient(to right, #57abff40, #004b96);
+        border-radius: 0.7rem;
+
+        .progress-bar {
+
+            background-color: #ffeb00;
+            color: #a57a00;
+            text-shadow: none;
+            box-shadow: 0px 0px 31px 0px #ffeb00;
+            transition: width 600ms ease, box-shadow 3000ms ease;
+            border-radius: 0.7rem;
+
+        }
+    }
+
+    .torrent-name {
+        /* max-width: 18rem; */
+    }
+
+    .start-torrent-btn, .stop-torrent-btn {
+        max-width: 10rem;
+        transition: max-width 150ms ease-in-out,
+                    padding 150ms ease-in-out;
+        overflow: hidden;
+        padding: 0.25rem 0.8rem;
+    }
+
+    .start-torrent-btn.hide, .stop-torrent-btn.hide {
+        max-width: 0rem;
+        padding: 0.25rem 0rem;
+    }
+
+
+}

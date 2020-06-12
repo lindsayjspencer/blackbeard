@@ -1,12 +1,15 @@
-const { lg, sleep } = require('./scripts/core-functions')
-
 module.exports = function() {
-    this.lg = function(arg) { return lg(arg) }
-    this.sleep = async function(arg) { return await sleep(arg) }
+    this.lg = (msg) => {
+        console.log(`//BB> ${msg}`)
+    }
+    this.sleep = async (millis) => {
+        console.log("sleeping...")
+        return new Promise(resolve => setTimeout(resolve, millis));
+    }
     this.path = require('path')
     this.fs = require('fs')
     this.port = process.env.PORT || 4000;
-    this.FetchStathamEntities = ["genres", "shows", "writers", "directors", "actors"];
+    this.FetchStathamEntities = ["shows", "actors", "writers", "directors", "genres"];
     this.cl_input = function(cmd, cb) {
         const { exec } = require("child_process");
         exec(cmd, (error, stdout, stderr) => {

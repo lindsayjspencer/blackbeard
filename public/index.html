@@ -3,11 +3,18 @@
 
 <head>
     <title>Blackbeard</title>
+	<link rel="apple-touch-icon" sizes="180x180" href="/img/favicon/apple-touch-icon.png">
+	<link rel="icon" type="image/png" sizes="32x32" href="/img/favicon/favicon-32x32.png">
+	<link rel="icon" type="image/png" sizes="16x16" href="/img/favicon/favicon-16x16.png">
+	<link rel="manifest" href="/img/favicon/site.webmanifest">
+	<link rel="mask-icon" href="/img/favicon/safari-pinned-tab.svg" color="#5bbad5">
+	<meta name="msapplication-TileColor" content="#da532c">
+	<meta name="theme-color" content="#ffffff">
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
     <script src="/jquery/dist/jquery.min.js"></script>
     <link defer type="text/css" rel="stylesheet" href="/bootstrap/dist/css/bootstrap.min.css">
-    <link type="text/css" rel="stylesheet" href="/css/main.css">
+    <link type="text/css" rel="stylesheet" href="/css/index.css">
     <link defer rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.11.2/css/all.css" integrity="sha256-46qynGAkLSFpVbEBog43gvNhfrOj+BmwXdxFgVK/Kvc=" crossorigin="anonymous">
     <script src="/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="/js/tween.umd.js"></script>
@@ -73,10 +80,10 @@
         <div style="" class="d-flex flex-column selected-list-rp flex-fill"></div>
     </div>
 
-    <div class="align-items-center bottom-card position-fixed rounded-0 w-100 d-flex">
+    <div class="align-items-center bottom-card position-fixed align-items-stretch rounded-0 w-100 d-flex">
         <div class="d-flex flex-row btn-group tor-toolbar">
             <div class="btn-group dropup">
-                <button type="button" class="p-4 no-arrow btn btn-dark btn-lg dropdown-toggle rounded-0" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <button type="button" class=" no-arrow btn btn-dark btn-lg dropdown-toggle rounded-0" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                     <i class="fas fa-cloud-download-alt fa-fw"></i>
                 </button>
                 <div class="dropdown-menu rounded-0 m-0" aria-labelledby="dropdownMenu2">
@@ -87,7 +94,7 @@
                 </div>
             </div>
             <div class="btn-group dropup">
-                <button type="button" class="p-4 add-dropdown-toggle no-arrow btn-dark btn-lg btn dropdown-toggle rounded-0" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <button type="button" class=" add-dropdown-toggle no-arrow btn-dark btn-lg btn dropdown-toggle rounded-0" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                     <i class="fas fa-plus fa-fw"></i>
                 </button>
                 <div class="dropdown-menu p-0 rounded-0 m-0">
@@ -95,11 +102,11 @@
                     <button class="add-magnet-btn btn btn-dark rounded-0 w-100" href="#">Add torrent</button>
                 </div>
             </div>
-            <button class="p-4 show-search-btn no-arrow btn btn-dark btn-lg rounded-0">
+            <button class=" show-search-btn no-arrow btn btn-dark btn-lg rounded-0">
                 <i class="fas fa-tv fa-fw"></i>
             </button>
             <div class="btn-group dropup">
-                <button type="button" class="mr-3 no-arrow btn btn-dark btn-lg dropdown-toggle rounded-0" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <button type="button" class="no-arrow btn btn-dark btn-lg dropdown-toggle rounded-0" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                     <i class="fas fa-skull text-warning fa-fw"></i>
                 </button>
                 <div class="dropdown-menu rounded-0 m-0" aria-labelledby="dropdownMenu2">
@@ -108,10 +115,16 @@
                 </div>
             </div>
         </div>
-        <h4 class="masthead-brand d-flex align-items-center w-100">
-            Blackbeard
-            <small class="console-log pl-3 ml-auto mr-3"></small>
-        </h4>
+        <div class="d-flex w-100 position-relative bg-warning">
+            <h4 class="d-none masthead-brand position-absolute d-sm-flex flex-column align-self-center ml-3">
+                Blackbeard
+            </h4>
+            <small class="console-log ml-auto my-1 mr-3 d-flex flex-column align-items-end"></small>
+        </div>
+    </div>
+
+    <div class="console-log-panel">
+        <small class="console-log ml-auto my-1 mr-3 d-flex flex-column align-items-end"></small>
     </div>
 
     <script type="module">
@@ -142,6 +155,31 @@
 
         var socket;
 
+        var lastSort = 0;
+
+        var consoleLog = [];
+
+        function updateConsole(msg) {
+            consoleLog.push( msg );
+            let mainLog = $(".bottom-card .console-log");
+            let overflowLog = $(".console-log-panel .console-log");
+
+            mainLog.html('');
+            consoleLog.slice(Math.max(consoleLog.length - 2, 0)).forEach((logMsg)=>{
+                mainLog.append(`
+                    <span class="console-msg">${logMsg}</span>
+                `);
+            });
+
+            if(consoleLog.length>2) {
+                let overflowMsg = consoleLog[consoleLog.length - 3];
+                let newMsg = $(`<span class="console-msg">${overflowMsg}</span>`);
+                overflowLog.append(newMsg);
+                setTimeout(()=>newMsg.addClass("init"), 50);
+                setTimeout(()=>newMsg.remove(), 12000);
+            }
+        }
+
         function getShows() {
             socket.emit('Shows.getAllShows')
         }
@@ -153,10 +191,7 @@
                 onSocketConnection();
             });
 
-            socket.on('msg', function(msg) {
-                console.log(msg);
-                $(".console-log").html(msg);
-            });
+            socket.on('msg', (msg) => { updateConsole(msg); });
 
             socket.on('Shows.getAllShows', function(data) {
                 allShows = [];
@@ -181,7 +216,7 @@
                 console.log("Show index reloaded.")
             });
 
-            socket.on('BlackbeardTransmission.get-rss-feed', function(feed) {
+            socket.on('Shows.get-rss-feed', function(feed) {
                 // console.log(feed)
                 var quality;
                 var icon = `<i class="fas fa-cloud-download-alt p-4 ml-auto"></i>`;
@@ -219,6 +254,13 @@
 
                     torrents.forEach((torrent)=>{
 
+                        if(torrent.percentDone==1) {
+                            if((Date.now()-lastSort)>15000) {
+                                socket.emit('BlackbeardTransmission.sort');
+                                lastSort = Date.now();
+                                console.log("Sorting torrents.");
+                            }
+                        }
                         if(!activeTorrents.find(x=>x.id==torrent.id)) {
                             activeTorrents.push( torrent )
                         }
@@ -246,7 +288,7 @@
                             // torrent.name = torrent.name.replace(/x264|AC3|mp4|mkv|\+|[\[\]\(\)]/gi, "");
                             torrent.torrentView = `
                             <div class="d-flex flex-row w-100 mb-2">
-                                <div class="name text-truncate">${torrent.name}</div>
+                                <div class="torrent-name text-truncate">${torrent.name}</div>
                                 <div class="time ml-auto" data-prevtime=0>${timeleft}</div>
                             </div>
                             `;
@@ -525,7 +567,7 @@
                 });
                 $(".show-selected").removeClass("show-selected");
                 btn.addClass("show-selected");
-                socket.emit('BlackbeardTransmission.get-rss-feed', id);
+                socket.emit('Shows.get-rss-feed', id);
             });
 
             $(".show-search-btn").on("click", function() {
@@ -662,12 +704,6 @@
         function initiateSockets() {
 
             socket = io.connect('http://localhost:4000/web');
-            // var testsocket = io.connect('http://localhost:4000/json.db');
-            //
-            // testsocket.emit("test", "string here")
-            // testsocket.on("test", res => {
-            //     console.log(res)
-            // })
 
             socketListenersOn();
 
@@ -699,16 +735,17 @@
                 }
             });
             setTimeout(function() {
-                $(".init-btn").click();
+                initBtn();
             }, 150);
-            $(".init-btn").on("click", function() {
+            function initBtn() {
                 initiateSockets();
                 $("html").off("keyup");
                 $("body").addClass("initiate");
                 setTimeout(function() {
                     $(".game-screen").remove();
                 }, 600);
-            });
+            }
+            $(".init-btn").on("click", initBtn);
         }
     </script>
 </body>

@@ -1,0 +1,24 @@
+/* buttons.scss */
+
+a.btn i {
+    background: #00000010;
+    min-width: 3rem;
+}
+
+a,
+a:focus,
+a:hover {
+    color: #fff;
+    box-shadow: none;
+}
+
+/* Custom default button */
+.btn-secondary,
+.btn-secondary:hover,
+.btn-secondary:focus {
+    color: #333;
+    text-shadow: none;
+    /* Prevent inheritance from `body` */
+    background-color: #fff;
+    border: .05rem solid #fff;
+}

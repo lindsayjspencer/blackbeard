@@ -1,0 +1,10 @@
+/* bootstrap_shim.scss */
+
+
+.initiate a.btn:focus, .initiate button.btn:focus {
+    box-shadow: none !important;
+}
+
+.initiate .btn.dropdown-toggle.no-arrow::after {
+    content: unset;
+}

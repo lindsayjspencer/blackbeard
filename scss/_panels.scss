@@ -1,0 +1,116 @@
+/* panels.scss */
+
+$nav-height: 48px;
+
+.console-log-panel {
+    --width: 20rem;
+    bottom: 0;
+    right: 0;
+    position: absolute;
+    display: flex;
+    flex-direction: column;
+    border: none;
+    margin-bottom: $nav-height;
+    background: transparent;
+    max-width: var(--width);
+    min-width: var(--width);
+
+    .console-msg {
+        color: #fff;
+        max-height: 0rem;
+        text-align: right;
+        transition: max-height 100ms ease-in,
+                    color 1500ms 10000ms;
+        overflow: hidden;
+    }
+    .console-msg.init {
+        max-height: 1.5rem;
+        color: #00000000;
+    }
+
+}
+
+.bottom-card {
+    bottom: 0;
+    border: none;
+    background: #7d7d7d;
+    transform: translateY(200px);
+    transition: transform 300ms 300ms ease-out;
+    min-height: $nav-height;
+    max-height: $nav-height;
+}
+
+.initiate {
+
+    .bottom-card {
+        transform: translateY(0px);
+    }
+
+}
+
+.right-panel {
+
+    right: 0;
+    max-height: calc(100vh - 48px);
+    min-height: calc(100vh - 48px);
+    border: none;
+    --twidth: 26rem;
+    max-width: var(--twidth);
+    min-width: var(--twidth);
+    background: #404040;
+    transform: translateX(100vw);
+    transition: transform 300ms ease-in-out;
+
+    .right-panel-inner.show {
+        transform: translateX(-25rem);
+    }
+
+    .right-panel-inner {
+        right: 0;
+        max-height: calc(100vh - 48px);
+        min-height: calc(100vh - 48px);
+        border: none;
+        --twidth: 26rem;
+        max-width: var(--twidth);
+        min-width: var(--twidth);
+        background: #002a69;
+        transform: translateX(50rem);
+        transition: transform 300ms ease-in-out;
+        z-index: -1;
+        overflow-y: scroll;
+    }
+
+    .right-panel-outer.show {
+        transform: translateX(-50rem);
+    }
+
+    .right-panel-outer {
+        right: 0;
+        max-height: calc(100vh - 48px);
+        min-height: calc(100vh - 48px);
+        border: none;
+        --twidth: 14rem;
+        max-width: var(--twidth);
+        min-width: var(--twidth);
+        background: #280075;
+        transform: translateX(50rem);
+        transition: transform 300ms ease-in-out;
+        z-index: -1;
+        overflow-y: scroll;
+    }
+
+    .dragonfly-search-panel {
+        background: #191919;
+    }
+
+    .selected-list-rp {
+        max-height: calc(100vh - 11rem);
+        overflow-y: scroll;
+        background: #191919;
+    }
+
+}
+
+.right-panel.show {
+    transform: translateX(0rem);
+}

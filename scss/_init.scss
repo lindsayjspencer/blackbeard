@@ -1,0 +1,27 @@
+/* init.scss */
+
+
+canvas {
+    display: block;
+}
+
+html {
+    height: auto;
+}
+
+html,
+body {
+    background-color: #333;
+    min-height: 100vh;
+}
+
+body {
+    margin: 0;
+    height: 100%;
+    display: -ms-flexbox;
+    display: -webkit-box;
+    display: flex;
+    -ms-flex-pack: center;
+    -webkit-box-pack: center;
+    justify-content: flex-start;
+}

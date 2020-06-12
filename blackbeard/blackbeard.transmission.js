@@ -1,5 +1,6 @@
-const Parser = require('rss-parser');
-const parser = new Parser();
+#!/usr/bin/env node
+require('../core')()
+
 const Transmission = require('transmission-promise');
 const transmission = new Transmission({
     port: 9091, // DEFAULT : 9091
@@ -14,6 +15,12 @@ class BlackbeardTransmission {
         this.downloadDir = path.join(__dirname, 'downloads')
         this.dataDir = path.join(__dirname, 'data')
 
+    }
+
+    restartDaemon(cb) {
+        cl_input('sudo bash scripts/save-settings.sh', (res) => {
+            cb(res)
+        })
     }
 
     async addTorrent(url, data=null) {
@@ -39,12 +46,6 @@ class BlackbeardTransmission {
             });
             return res
         })
-
-    }
-
-    async pullFeed(url) {
-
-        return await parser.parseURL(url);
 
     }
 
@@ -143,10 +144,15 @@ class BlackbeardTransmission {
         transmission.start(id)
     }
 
-    sort() {
+    sort(cb) {
         let dataDir = this.dataDir
         let downloadDir = this.downloadDir
+        let removed = 0
+        let copied = 0
         transmission.get().then(res => {
+            let sortRequired = res.torrents.filter(x=>x.percentDone==1).length
+            if(sortRequired==0) { setTimeout(()=>{ cb(`Sorting not required`); }, 250); return; }
+            cb(`${sortRequired} completed torrents to sort`)
             res.torrents.forEach((tor) => {
                 // clear completed
                 if (tor.percentDone == 1) {
@@ -154,6 +160,7 @@ class BlackbeardTransmission {
                         encoding: 'utf8',
                         flag: 'r'
                     })
+                    cb(`Reading tor file`)
                     var torstore = JSON.parse(data)
                     try {
                         var torName
@@ -166,7 +173,9 @@ class BlackbeardTransmission {
                             //file exists
                             transmission.remove(tor.id)
                             lg("torrent removed")
+                            removed++
                             // lg("already exists")
+                            cb(`Removed ${torName}, file already exists.`)
                         } else {
                             lg("copying file: " + tor.name)
                             const {
@@ -184,10 +193,12 @@ class BlackbeardTransmission {
                                 lg(`${stdout}`);
                                 transmission.remove(tor.id)
                                 lg("torrent removed")
+                                cb(`Removed and copied ${torName} to downloads.`)
                             });
                         }
                     } catch (err) {
                         console.error(err)
+                        cb(`Error reading tor file`)
                     }
                 }
             })

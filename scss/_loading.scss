@@ -1,0 +1,29 @@
+/* loading.scss */
+
+
+.game-screen-options {
+    max-width: 200px;
+    transition: max-height 200ms 100ms ease-in-out, margin 200ms 100ms ease-in-out;
+    overflow-y: hidden;
+    max-height: 500px;
+}
+
+.game-screen-options.hide {
+    /* transition: max-height 200ms 100ms ease-in-out, margin 200ms 100ms ease-in-out; */
+    transition: max-height 200ms ease-in-out, margin 200ms ease-in-out;
+    max-height: 0px;
+}
+
+.game-screen {
+    height: 100vh;
+    width: 100vw;
+    position: fixed;
+    z-index: 1101;
+    opacity: 1;
+    /* background: white; */
+    transition: opacity 200ms ease-in-out;
+}
+
+.initiate .game-screen {
+    opacity: 0;
+}
