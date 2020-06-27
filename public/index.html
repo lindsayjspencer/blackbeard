@@ -319,6 +319,9 @@
                                         <div class="d-flex align-self-end">
                                             <button class="btn btn-warning btn-sm rounded-0 border-0 ${!hideStartBtn ? 'hide ' : ''}stop-torrent-btn" data-tid=${torrent.id}>Stop</button>
                                             <button class="btn btn-primary btn-sm rounded-0 border-0 ${hideStartBtn ? 'hide ' : ''}start-torrent-btn" data-tid=${torrent.id}>Start</button>
+                                            <button class="btn btn-danger btn-sm rounded-0 border-0 remove-torrent-btn" data-tid=${torrent.id}>
+                                                <i class="fas fa-times"></i>
+                                            </button>
                                         </div>
                                     </div>
                                 </div>
@@ -488,6 +491,10 @@
 
             $(document.body).on("click", ".start-torrent-btn", function() {
                 socket.emit('BlackbeardTransmission.start', $(this).data('tid'))
+            });
+
+            $(document.body).on("click", ".remove-torrent-btn", function() {
+                socket.emit('BlackbeardTransmission.remove', $(this).data('tid'))
             });
 
             $(".stop-btn").on("click", function() {

@@ -69,6 +69,14 @@ class SocketRoutes {
                 });
 
             // <---
+            // ---> Remove a torrent by transmission ID
+
+                socket.on('BlackbeardTransmission.remove', function(id) {
+                    BlackbeardTransmission.remove(parseInt(id))
+                    socket.emit('msg', 'Torrent removed')
+                });
+
+            // <---
             // ---> Add a torrent by magnet link (optional: show data)
 
                 socket.on('BlackbeardTransmission.add-magnet', async function(data) {
