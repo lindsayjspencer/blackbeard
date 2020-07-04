@@ -527,7 +527,7 @@
 
             $(document).on("click", ".add-ep-magnet-btn", function() {
                 let show = allShows.find(x=>x.id==$(this).data('show-id'))
-                socket.emit('BlackbeardTransmission.add-magnet', {
+                socket.emit('BlackbeardTransmission.add-ep-magnet', {
                     magnetLink: $(this).data('magnet-link'),
                     showData: show
                 });

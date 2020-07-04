@@ -77,10 +77,19 @@ class SocketRoutes {
                 });
 
             // <---
+            // ---> Add a tv show torrent by magnet link
+
+                socket.on('BlackbeardTransmission.add-ep-magnet', async function(data) {
+                    var res = await BlackbeardTransmission.addTorrent(data.magnetLink, data.showData)
+                    socket.emit('msg', 'magnet added: ' + res.name)
+                });
+
+
+            // <---
             // ---> Add a torrent by magnet link (optional: show data)
 
                 socket.on('BlackbeardTransmission.add-magnet', async function(data) {
-                    var res = await BlackbeardTransmission.addTorrent(data.magnetLink, data.showData)
+                    var res = await BlackbeardTransmission.addTorrent(data)
                     socket.emit('msg', 'magnet added: ' + res.name)
                 });
 
