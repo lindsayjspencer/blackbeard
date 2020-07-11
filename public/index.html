@@ -285,11 +285,29 @@
                                 }
                                 timeleft = minutesleft + ":" + secondsleft;
                             }
+                            let hideStartBtn;
+                            switch(torrent.status) {
+                                case 4:
+                                    hideStartBtn = true;
+                                break;
+                                case 0:
+                                    hideStartBtn = false;
+                                break;
+                            }
                             // torrent.name = torrent.name.replace(/x264|AC3|mp4|mkv|\+|[\[\]\(\)]/gi, "");
                             torrent.torrentView = `
                             <div class="d-flex flex-row w-100 mb-2">
                                 <div class="torrent-name text-truncate">${torrent.name}</div>
-                                <div class="time ml-auto" data-prevtime=0>${timeleft}</div>
+                                <div class="d-flex flex-column">
+                                    <div class="time ml-auto" data-prevtime=0>${timeleft}</div>
+                                    <div class="d-flex align-self-end">
+                                        <button class="btn btn-warning btn-sm rounded-0 border-0 ${!hideStartBtn ? 'hide ' : ''}stop-torrent-btn" data-tid=${torrent.id}>Stop</button>
+                                        <button class="btn btn-primary btn-sm rounded-0 border-0 ${hideStartBtn ? 'hide ' : ''}start-torrent-btn" data-tid=${torrent.id}>Start</button>
+                                        <button class="btn btn-danger btn-sm rounded-0 border-0 remove-torrent-btn" data-tid=${torrent.id}>
+                                            <i class="fas fa-times"></i>
+                                        </button>
+                                    </div>
+                                </div>
                             </div>
                             `;
                             if(torrent.data) {
@@ -299,15 +317,6 @@
                                 for (const match of torrent.details) {
                                   torrent.season = match[2];
                                   torrent.seasonEp = match[3];
-                                }
-                                let hideStartBtn;
-                                switch(torrent.status) {
-                                    case 4:
-                                        hideStartBtn = true;
-                                    break;
-                                    case 0:
-                                        hideStartBtn = false;
-                                    break;
                                 }
                                 torrent.torrentView = `
                                 <div class="d-flex flex-row w-100 mb-2">
